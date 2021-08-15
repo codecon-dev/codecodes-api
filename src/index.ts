@@ -3,8 +3,9 @@ dotenv.config()
 import express from 'express'
 import logger from 'morgan'
 import cors from 'cors'
+import middlewares from './middlewares'
 import token from './routes/token'
-import middlewares from './middewares'
+import docs from './routes/docs'
 
 const PORT = process.env.PORT || 8080
 
@@ -16,6 +17,7 @@ try {
   app.use(express.json())
 
   app.use('/token', token)
+  app.use("/docs", docs)
 
   app.use(middlewares.notFound)
   app.use(middlewares.errorHandler)

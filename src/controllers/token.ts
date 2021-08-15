@@ -1,131 +1,106 @@
-import { NextFunction, Request, Response } from 'express'
+import { ErrorResponseModel, ITokenClaimPayload, RequestResult } from '../types'
 import { getDatabaseTokenByCode, updateDatabaseToken } from '../services/token'
 import { getDatabaseUserById, updateDatabaseUser } from '../services/user'
+import { Controller, Post, Route, Body, Security, Response } from 'tsoa'
+import { parseResponseResult } from '../common.ts/parseResponseResult'
 import config from '../config'
 
-export async function claim (request: Request, response: Response, next: NextFunction): Promise<void> {
-  try {
-    if (!config.claim.enabled) {
-      response.json({
-        status: 'error',
-        message: config.claim.disabledMessage
-      })
-      return
-    }
+@Route('/token')
+export class TokenController extends Controller {
+  @Response<ErrorResponseModel>('401', 'Unauthorized', {
+    status: 401,
+    message: 'Wrong or missing apikey'
+  })
+  @Security("api_key")
+  @Post('/claim')
+  public async claim (@Body() body: ITokenClaimPayload): Promise<RequestResult> {
+    try {
+      if (!config.claim.enabled) {
+        return parseResponseResult('error', config.claim.disabledMessage)
+      }
 
-    const { body: { code, email: userId, name: tag } } = request
+      const { code, email: userId, name: tag } = body
 
-    if (!code) {
-      response.json({
-        status: 'error',
-        message: 'No code was provided'
-      })
-      return
-    }
+      if (!code) {
+        return parseResponseResult('error', 'No code was provided')
+      }
 
-    const token = await getDatabaseTokenByCode(code)
+      const token = await getDatabaseTokenByCode(code)
 
-    const { claimedBy, remainingClaims, value, decreaseValue, minimumValue, expireAt } = token
+      const { claimedBy, remainingClaims, value, decreaseValue, minimumValue, expireAt } = token
 
-    if (!remainingClaims) {
-      response.json({
-        status: 'error',
-        message: 'Vish, acabaram os resgates disponíveis para esse token :('
-      })
-      return
-    }
+      if (!remainingClaims) {
+        return parseResponseResult('error', 'Vish, acabaram os resgates disponíveis para esse token :(')
+      }
 
-    const isExpired = expireAt && new Date(Date.now()) > new Date(expireAt)
-    if (isExpired) {
-      response.json({
-        status: 'error',
-        message: 'Esse token expirou :('
-      })
-      return
-    }
+      const isExpired = expireAt && new Date(Date.now()) > new Date(expireAt)
+      if (isExpired) {
+        return parseResponseResult('error', 'Esse token expirou :(')
+      }
 
-    const hasAlreadyClaimed = claimedBy.some(claimedUser => claimedUser.id === userId)
-    if (hasAlreadyClaimed) {
-      response.json({
-        status: 'error',
-        message: 'Você já resgatou esse token :eyes:'
-      })
-      return
-    }
+      const hasAlreadyClaimed = claimedBy.some(claimedUser => claimedUser.id === userId)
+      if (hasAlreadyClaimed) {
+        return parseResponseResult('error', 'Você já resgatou esse token :eyes:')
+      }
 
-    const timesClaimed = claimedBy.length
-    let scoreAcquired = value - (timesClaimed * decreaseValue)
-    if (scoreAcquired < minimumValue) {
-      scoreAcquired = minimumValue
-    }
+      const timesClaimed = claimedBy.length
+      let scoreAcquired = value - (timesClaimed * decreaseValue)
+      if (scoreAcquired < minimumValue) {
+        scoreAcquired = minimumValue
+      }
 
-    let userCurrentScore = 0
-    let tokensClaimed = []
-    const user = await getDatabaseUserById(userId)
-    if (user) {
-      userCurrentScore = user.score
-      tokensClaimed = user.tokens
-    }
+      let userCurrentScore = 0
+      let tokensClaimed = []
+      const user = await getDatabaseUserById(userId)
+      if (user) {
+        userCurrentScore = user.score
+        tokensClaimed = user.tokens
+      }
 
-    const score = {
-      acquired: scoreAcquired,
-      total: userCurrentScore + scoreAcquired
-    }
+      const score = {
+        acquired: scoreAcquired,
+        total: userCurrentScore + scoreAcquired
+      }
 
-    const date = new Date(Date.now())
-    const dateString = date.toISOString()
-    const claimUser = {
-      tag: tag,
-      id: String(userId),
-      claimedAt: dateString
-    }
-
-    const updatedToken = {
-      ...token,
-      remainingClaims: remainingClaims - 1,
-      claimedBy: claimedBy.concat(claimUser)
-    }
-
-    const updatedUser = {
-      userId,
-      tag,
-      score: score.total,
-      tokens: tokensClaimed.concat({
-        code,
-        value: scoreAcquired,
+      const date = new Date(Date.now())
+      const dateString = date.toISOString()
+      const claimUser = {
+        tag: tag,
+        id: String(userId),
         claimedAt: dateString
-      })
-    }
+      }
 
-    const userClaimSuccess = await updateDatabaseUser(updatedUser)
-    if (!userClaimSuccess) {
-      response.json({
-        status: 'error',
-        message: 'Putz, deu ruim ao atualizar o usuário'
-      })
-      return
-    }
+      const updatedToken = {
+        ...token,
+        remainingClaims: remainingClaims - 1,
+        claimedBy: claimedBy.concat(claimUser)
+      }
 
-    const databaseUpdatedToken = await updateDatabaseToken(updatedToken)
-    if (!databaseUpdatedToken) {
-      response.json({
-        status: 'error',
-        message: 'Putz, deu ruim ao atualizar o token'
-      })
-      return
-    }
+      const updatedUser = {
+        userId,
+        tag,
+        score: score.total,
+        tokens: tokensClaimed.concat({
+          code,
+          value: scoreAcquired,
+          claimedAt: dateString
+        })
+      }
 
-    response.json({
-      status: 'success',
-      message: `O código ${code} foi resgatado por ${userId}.`
-    })
-    return
-  } catch (error) {
-    next(error)
-    console.log(error)
+      const userClaimSuccess = await updateDatabaseUser(updatedUser)
+      if (!userClaimSuccess) {
+        return parseResponseResult('error', 'Putz, deu ruim ao atualizar o usuário')
+      }
+
+      const databaseUpdatedToken = await updateDatabaseToken(updatedToken)
+      if (!databaseUpdatedToken) {
+        return parseResponseResult('error', 'Putz, deu ruim ao atualizar o token')
+      }
+
+      return parseResponseResult ('success', `O código ${code} foi resgatado por ${userId}.`)
+    } catch (error) {
+      console.log(error)
+      throw new Error(error)
+    }
   }
-}
-
-export default {
-  claim
 }

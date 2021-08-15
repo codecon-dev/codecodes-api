@@ -13,7 +13,7 @@ export async function getDatabaseTokenByCode (code: string): Promise<Token> {
 export async function updateDatabaseToken (token: Token): Promise<Token|false> {
   try {
     const { code } = token
-  
+
     const updatedToken = await createOrUpdateToken(code, token)
     if (!updatedToken) {
       throw new Error(`Error on Token Update: Token ${code} was not found`)

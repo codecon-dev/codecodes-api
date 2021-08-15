@@ -1,0 +1,21 @@
+{
+  "entryFile": "src/index.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/controllers/*.ts"],
+  "spec": {
+    "outputDirectory": "src",
+    "specVersion": 3,
+    "securityDefinitions": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "x-apikey",
+        "in": "headers"
+      }
+    }
+  },
+  "routes": {
+    "routesDir": "src/routes",
+    "routesFileName": "index.ts",
+    "authenticationModule": "src/middlewares/authentication.ts"
+  }
+}
