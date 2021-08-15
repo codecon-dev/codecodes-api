@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+import { parseResponseResult } from '../common.ts/parseResponseResult'
 
 export function authentication (request: Request, response: Response, next: NextFunction): void {
   try {
@@ -8,9 +9,6 @@ export function authentication (request: Request, response: Response, next: Next
     if (providedApiKey !== requiredApiKey) throw new Error(apiKeyErrorMessage)
     next()
   } catch (error) {
-    response.json({
-      status: 'error',
-      message: error.message
-    })
+    response.json(parseResponseResult(error, error.message))
   }
 }
