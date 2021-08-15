@@ -1,8 +1,17 @@
-import express from 'express'
-import token from '../controllers/token'
-import { validateApiKey } from '../middewares/validateApiKey'
+import { Router } from 'express'
+import { TokenController } from '../controllers/token'
+import middlewares from '../middlewares'
 
-const router = express.Router()
-router.post('/claim', validateApiKey, token.claim)
+const router = Router()
+
+router.post("/claim", middlewares.authentication, async (request, response, next) => {
+  try {
+    const controller = new TokenController()
+    const claimResult = await controller.claim(request.body)
+    return response.send(claimResult)
+  } catch (error) {
+    next(error)
+  }
+})
 
 export default router

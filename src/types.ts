@@ -1,4 +1,3 @@
-
 type UserClaim = {
   tag: string
   id: string
@@ -24,4 +23,20 @@ export type User = {
   tag: string
   score: number
   tokens: Token[]
+}
+
+export type RequestResult = {
+  status: string,
+  message: string
+}
+
+export interface ITokenClaimPayload {
+  code: string;
+  email: string;
+  name: string;
+}
+
+export interface ErrorResponseModel {
+  status: number;
+  message: string;
 }

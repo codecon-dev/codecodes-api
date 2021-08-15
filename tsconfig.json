@@ -7,5 +7,6 @@
     "allowSyntheticDefaultImports": true,
     "outDir": "dist",
     "rootDir": "src",
+    "experimentalDecorators": true
   }
 }

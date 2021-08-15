@@ -15,6 +15,8 @@ module.exports = {
   rules: {
     'no-unused-vars': 'warn',
     "indent": "off",
-    "@typescript-eslint/indent": ["error", 2]
+    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/semi": ["error", "never"],
+    "no-trailing-spaces": ["warn"]
   },
 }
