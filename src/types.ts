@@ -25,6 +25,12 @@ export type User = {
   tokens: Token[]
 }
 
+export type CompactUser = {
+  userId: string,
+  score: number,
+  tag: string
+}
+
 export type RequestResult = {
   status: string,
   message: string
@@ -33,7 +39,7 @@ export type RequestResult = {
 export type RankRequestResult = {
   status: string,
   message: string
-  data: User[]
+  data: CompactUser[]
 }
 
 export interface ITokenClaimPayload {
