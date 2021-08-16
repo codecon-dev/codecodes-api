@@ -1,5 +1,5 @@
 import { User } from "../types"
-import { getUserFromMongo, createOrUpdateUser } from "./mongoose"
+import { getUserFromMongo, createOrUpdateUser, getUsersFromMongo } from "./mongoose"
 
 export async function getDatabaseUserById (userId: string): Promise<User> {
   try {
@@ -21,5 +21,14 @@ export async function updateDatabaseUser (user: User): Promise<User|false> {
   } catch (error) {
     console.log(error)
     return false
+  }
+}
+
+export async function getDatabaseUsers (): Promise<User[]> {
+  try {
+    const users = await getUsersFromMongo()
+    return users
+  } catch (error) {
+    console.log(error)
   }
 }

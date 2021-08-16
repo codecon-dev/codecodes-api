@@ -30,6 +30,12 @@ export type RequestResult = {
   message: string
 }
 
+export type RankRequestResult = {
+  status: string,
+  message: string
+  data: User[]
+}
+
 export interface ITokenClaimPayload {
   code: string;
   email: string;

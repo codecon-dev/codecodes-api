@@ -5,6 +5,7 @@ import logger from 'morgan'
 import cors from 'cors'
 import middlewares from './middlewares'
 import token from './routes/token'
+import user from './routes/user'
 import docs from './routes/docs'
 
 const PORT = process.env.PORT || 8080
@@ -17,6 +18,7 @@ try {
   app.use(express.json())
 
   app.use('/token', token)
+  app.use('/user', user)
   app.use("/docs", docs)
 
   app.use(middlewares.notFound)

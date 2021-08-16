@@ -60,6 +60,19 @@ export async function getUserFromMongo (userIdOrTag: string): Promise<User|null>
   }
 }
 
+export async function getUsersFromMongo (): Promise<User[]> {
+  try {
+    await connectMongoose()
+    const users = await UserModel.find({})
+    if (!users) {
+      return []
+    }
+    return users
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export async function createOrUpdateUser (userId: string, userContent: User): Promise<User> {
   try {
     await connectMongoose()
