@@ -1,4 +1,4 @@
-type UserClaim = {
+export type UserClaim = {
   tag: string
   id: string
   claimedAt: string
