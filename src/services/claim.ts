@@ -91,7 +91,7 @@ export default async function claimService(code: string, userId: string, tag: st
     }
 
     if (hasUserAlreadyClaimed(claimedBy, userId)) {
-      return parseResponseResult('error', 'Você já resgatou esse token :eyes:')
+      return parseResponseResult('error', 'Você já resgatou esse token 👀')
     }
 
     const date = new Date(Date.now())
