@@ -76,6 +76,9 @@ export default async function claimService(code: string, userId: string, tag: st
     }
 
     const token = await getDatabaseTokenByCode(code)
+    if (!token) {
+      return parseResponseResult('error', 'Token not found')
+    }
 
     const { claimedBy, remainingClaims, value, decreaseValue, minimumValue, expireAt } = token
 
