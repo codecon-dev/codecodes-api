@@ -5,5 +5,5 @@
 
 This is the API version of the CodeCodes gamification Discord Bot.  
 
-You can check the available routes and methos by accessing /docs in the API URL (which is secret for now)
+You can check the available routes and methods by accessing /docs in the API URL (which is secret for now)
 
