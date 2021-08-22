@@ -4,19 +4,6 @@
 [![https://img.shields.io/badge/made%20with-express-blue](https://img.shields.io/badge/made%20with-express-blue)](https://expressjs.com/)
 
 This is the API version of the CodeCodes gamification Discord Bot.  
-This doc shall be improved someday
 
-## Routes
-
-All routes require a `x-apikey` as header
-
-### /token/claim [POST]
-Body:
-```
-{
-  "code": "CODECON21",
-  "id": "mark@email.com",
-  "tag": "Mark Kop"
-}
-```
+You can check the available routes and methos by accessing /docs in the API URL (which is secret for now)
 
