@@ -109,7 +109,7 @@ export default async function claimService(code: string, userId: string, tag: st
       return parseResponseResult('error', 'Putz, deu ruim ao atualizar o token')
     }
 
-    return parseResponseResult ('success', `O código ${code} foi resgatado por ${userId}.`)
+    return parseResponseResult('success', `Boa! Você ganhou ${scoreAcquired} pontos e agora está com ${userClaimSuccess.score} pontos!`)
   } catch (error) {
     console.log(error)
     throw new Error(error)
