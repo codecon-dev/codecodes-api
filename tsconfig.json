@@ -8,8 +8,8 @@
     "outDir": "dist",
     "rootDir": "src",
     "experimentalDecorators": true,
-    "exclude": [
-      "test"
-    ]
-  }
+  },
+  "exclude": [
+    "test"
+  ]
 }
