@@ -1,6 +1,7 @@
 import { ErrorResponseModel, RankRequestResult, RequestResult } from '../types'
 import { Controller, Get, Route, Security, Response } from 'tsoa'
-import rankService from '../services/rank'
+import { getRankService } from '../services/rank'
+import { getDatabaseUsers } from '../services/user'
 
 @Route('/user')
 export class UserController extends Controller {
@@ -10,9 +11,10 @@ export class UserController extends Controller {
   })
   @Security("api_key")
   @Get('/rank')
-  public async getRank (): Promise<RankRequestResult|RequestResult> {
+  public async getRank(): Promise<RankRequestResult | RequestResult> {
     try {
-      const rankResult = await rankService()
+      const users = await getDatabaseUsers()
+      const rankResult = await getRankService(users)
       return rankResult
     } catch (error) {
       console.log(error)

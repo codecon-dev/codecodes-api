@@ -4,6 +4,12 @@ export type UserClaim = {
   claimedAt: string
 }
 
+export type UserClaimedToken = {
+  code: string
+  value: number
+  claimedAt: string
+}
+
 export type Token = {
   code: string
   description: string
@@ -22,7 +28,7 @@ export type User = {
   userId: string
   tag: string
   score: number
-  tokens: Token[]
+  tokens: UserClaimedToken[]
 }
 
 export type CompactUser = {
