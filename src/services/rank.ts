@@ -29,10 +29,11 @@ function sortUsers(users: User[]) {
 }
 
 function mapCompactUsers(users: User[]) {
-  return users.map(({ userId, score, tag }) => ({
+  return users.map(({ userId, score, tag, tokens }) => ({
     userId,
     score,
-    tag
+    tag,
+    claims: tokens.length
   }))
 }
 
