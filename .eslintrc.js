@@ -17,6 +17,7 @@ module.exports = {
     "indent": "off",
     "@typescript-eslint/indent": ["error", 2],
     "@typescript-eslint/semi": ["error", "never"],
-    "no-trailing-spaces": ["warn"]
+    "no-trailing-spaces": ["warn"],
+    '@typescript-eslint/no-var-requires': 0,
   },
 }

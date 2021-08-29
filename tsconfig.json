@@ -3,10 +3,13 @@
     "target": "ES5",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "esModuleInterop" : true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "dist",
     "rootDir": "src",
-    "experimentalDecorators": true
-  }
+    "experimentalDecorators": true,
+  },
+  "exclude": [
+    "test"
+  ]
 }
