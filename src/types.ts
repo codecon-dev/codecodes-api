@@ -34,7 +34,8 @@ export type User = {
 export type CompactUser = {
   userId: string,
   score: number,
-  tag: string
+  tag: string,
+  claims: number
 }
 
 export type RequestResult = {
