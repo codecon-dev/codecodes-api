@@ -72,12 +72,12 @@ export default async function claimService(code: string, userId: string, tag: st
     }
 
     if (!code) {
-      return parseResponseResult('error', 'No code was provided')
+      return parseResponseResult('error', 'Nenhum código foi fornecido')
     }
 
     const token = await getDatabaseTokenByCode(code)
     if (!token) {
-      return parseResponseResult('error', 'Token not found')
+      return parseResponseResult('error', 'Código não encontrado')
     }
 
     const { claimedBy, remainingClaims, value, decreaseValue, minimumValue, expireAt } = token
@@ -101,12 +101,12 @@ export default async function claimService(code: string, userId: string, tag: st
 
     const userClaimSuccess = await saveUserScore(userId, scoreAcquired, tag, code, nowDateString)
     if (!userClaimSuccess) {
-      return parseResponseResult('error', 'Putz, deu ruim ao atualizar o usuário')
+      return parseResponseResult('error', 'Putz, deu ruim ao atualizar o usuário. Entre em contato com um administrador.')
     }
 
     const databaseUpdatedToken = await saveTokenClaims(tag, userId, nowDateString, token)
     if (!databaseUpdatedToken) {
-      return parseResponseResult('error', 'Putz, deu ruim ao atualizar o token')
+      return parseResponseResult('error', 'Putz, deu ruim ao atualizar o token. Entre em contato com um administrador.')
     }
 
     return parseResponseResult('success', `Boa! Você ganhou ${scoreAcquired} pontos e agora está com ${userClaimSuccess.score} pontos!`)
