@@ -1,5 +1,5 @@
 import { RequestResult } from "../types"
 
-export function parseResponseResult(status: string, message: string): RequestResult {
-  return { status, message }
+export function parseResponseResult(status: string, message: string, code?: number): RequestResult {
+  return { status, message, code }
 }

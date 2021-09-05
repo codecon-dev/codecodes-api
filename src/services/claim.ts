@@ -68,30 +68,30 @@ async function saveTokenClaims(userTag: string, userId: string, nowDateString: s
 export default async function claimService(code: string, userId: string, tag: string): Promise<RequestResult> {
   try {
     if (!config.claim.enabled) {
-      return parseResponseResult('error', config.claim.disabledMessage)
+      return parseResponseResult('error', config.claim.disabledMessage, 422)
     }
 
     if (!code) {
-      return parseResponseResult('error', 'Nenhum código foi fornecido')
+      return parseResponseResult('error', 'Nenhum código foi fornecido', 422)
     }
 
     const token = await getDatabaseTokenByCode(code)
     if (!token) {
-      return parseResponseResult('error', 'Código não encontrado')
+      return parseResponseResult('error', 'Código não encontrado', 422)
     }
 
     const { claimedBy, remainingClaims, value, decreaseValue, minimumValue, expireAt } = token
 
     if (!remainingClaims) {
-      return parseResponseResult('error', 'Vish, acabaram os resgates disponíveis para esse token :(')
+      return parseResponseResult('error', 'Vish, acabaram os resgates disponíveis para esse token :(', 422)
     }
 
     if (isExpired(expireAt)) {
-      return parseResponseResult('error', 'Esse token expirou :(')
+      return parseResponseResult('error', 'Esse token expirou :(', 422)
     }
 
     if (hasUserAlreadyClaimed(claimedBy, userId)) {
-      return parseResponseResult('error', 'Você já resgatou esse token 👀')
+      return parseResponseResult('error', 'Você já resgatou esse token 👀', 422)
     }
 
     const date = new Date(Date.now())
@@ -101,12 +101,12 @@ export default async function claimService(code: string, userId: string, tag: st
 
     const userClaimSuccess = await saveUserScore(userId, scoreAcquired, tag, code, nowDateString)
     if (!userClaimSuccess) {
-      return parseResponseResult('error', 'Putz, deu ruim ao atualizar o usuário. Entre em contato com um administrador.')
+      return parseResponseResult('error', 'Putz, deu ruim ao atualizar o usuário. Entre em contato com um administrador.', 422)
     }
 
     const databaseUpdatedToken = await saveTokenClaims(tag, userId, nowDateString, token)
     if (!databaseUpdatedToken) {
-      return parseResponseResult('error', 'Putz, deu ruim ao atualizar o token. Entre em contato com um administrador.')
+      return parseResponseResult('error', 'Putz, deu ruim ao atualizar o token. Entre em contato com um administrador.', 422)
     }
 
     return parseResponseResult('success', `Boa! Você ganhou ${scoreAcquired} pontos e agora está com ${userClaimSuccess.score} pontos!`)

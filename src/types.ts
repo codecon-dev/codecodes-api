@@ -40,7 +40,8 @@ export type CompactUser = {
 
 export type RequestResult = {
   status: string,
-  message: string
+  message: string,
+  code?: number,
 }
 
 export type RankRequestResult = {
