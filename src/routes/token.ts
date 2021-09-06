@@ -8,7 +8,7 @@ router.post("/claim", middlewares.authentication, async (request, response, next
   try {
     const controller = new TokenController()
     const claimResult = await controller.claim(request.body)
-    return response.status(claimResult.code || 200).send(claimResult)
+    return response.status(claimResult.statusCode || 200).send(claimResult)
   } catch (error) {
     next(error)
   }

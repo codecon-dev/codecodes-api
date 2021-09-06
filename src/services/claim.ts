@@ -2,7 +2,7 @@ import { getDatabaseTokenByCode, updateDatabaseToken } from './token'
 import { getDatabaseUserById, updateDatabaseUser } from './user'
 import { parseResponseResult } from '../common/parseResponseResult'
 import config from '../config'
-import { UserClaim, RequestResult, Token } from '../types'
+import { UserClaim, RequestResult, Token, ClaimRequestResult } from '../types'
 
 function isExpired(expireAt: string) {
   return expireAt && new Date(Date.now()) > new Date(expireAt)
@@ -65,7 +65,7 @@ async function saveTokenClaims(userTag: string, userId: string, nowDateString: s
   return updateDatabaseToken(updatedToken)
 }
 
-export default async function claimService(code: string, userId: string, tag: string): Promise<RequestResult> {
+export default async function claimService(code: string, userId: string, tag: string): Promise<RequestResult|ClaimRequestResult> {
   try {
     if (!config.claim.enabled) {
       return parseResponseResult('error', config.claim.disabledMessage, 422)
@@ -108,8 +108,15 @@ export default async function claimService(code: string, userId: string, tag: st
     if (!databaseUpdatedToken) {
       return parseResponseResult('error', 'Putz, deu ruim ao atualizar o token. Entre em contato com um administrador.', 422)
     }
-
-    return parseResponseResult('success', `Boa! Você ganhou ${scoreAcquired} pontos e agora está com ${userClaimSuccess.score} pontos!`)
+    return {
+      status: 'success',
+      message: `Boa! Você ganhou ${scoreAcquired} pontos e agora está com ${userClaimSuccess.score} pontos!`,
+      statusCode: 200,
+      data: {
+        scoreAcquired,
+        totalScore: userClaimSuccess.score
+      }
+    }
   } catch (error) {
     console.log(error)
     throw new Error(error)
