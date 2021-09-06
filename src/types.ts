@@ -38,10 +38,20 @@ export type CompactUser = {
   claims: number
 }
 
+export type ClaimRequestResult = {
+  status: string,
+  message: string,
+  statusCode?: number,
+  data: {
+    scoreAcquired: number,
+    totalScore: number
+  }
+}
+
 export type RequestResult = {
   status: string,
   message: string,
-  code?: number,
+  statusCode?: number,
 }
 
 export type RankRequestResult = {
