@@ -42,6 +42,7 @@ export async function getRankService(users: User[]): Promise<RankRequestResult> 
   const compactUsers = mapCompactUsers(usersSorted)
   return {
     status: "sucess",
+    statusCode: 200,
     message: `Rank for all ${users.length} users`,
     data: compactUsers
   }

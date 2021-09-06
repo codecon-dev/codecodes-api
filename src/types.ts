@@ -41,7 +41,7 @@ export type CompactUser = {
 export type ClaimRequestResult = {
   status: string,
   message: string,
-  statusCode?: number,
+  statusCode: 200,
   data: {
     scoreAcquired: number,
     totalScore: number
@@ -56,7 +56,8 @@ export type RequestResult = {
 
 export type RankRequestResult = {
   status: string,
-  message: string
+  message: string,
+  statusCode: 200,
   data: CompactUser[]
 }
 
@@ -67,6 +68,6 @@ export interface ITokenClaimPayload {
 }
 
 export interface ErrorResponseModel {
-  status: number;
+  statusCode: number;
   message: string;
 }

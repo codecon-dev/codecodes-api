@@ -6,7 +6,7 @@ import { getDatabaseUsers } from '../services/user'
 @Route('/user')
 export class UserController extends Controller {
   @Response<ErrorResponseModel>('401', 'Unauthorized', {
-    status: 401,
+    statusCode: 401,
     message: 'Wrong or missing apikey'
   })
   @Security("api_key")
