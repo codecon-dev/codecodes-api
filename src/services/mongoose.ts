@@ -32,6 +32,21 @@ export async function getTokenFromMongo (tokenCode: string): Promise<Token|null>
   }
 }
 
+export async function getTokensFromMongo (): Promise<Token[]> {
+  try {
+    await connectMongoose()
+    const tokens = await TokenModel.find({})
+    if (!tokens) {
+      return []
+    }
+
+    return tokens
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
 export async function createOrUpdateToken (tokenCode: string, tokenContent: Token): Promise<Token> {
   try {
     await connectMongoose()

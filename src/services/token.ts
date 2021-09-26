@@ -1,10 +1,19 @@
 import { Token } from "../types"
-import { getTokenFromMongo, createOrUpdateToken } from "./mongoose"
+import { getTokenFromMongo, createOrUpdateToken, getTokensFromMongo } from "./mongoose"
 
 export async function getDatabaseTokenByCode (code: string): Promise<Token> {
   try {
     const token = await getTokenFromMongo(code)
     return token
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function getDatabaseTokens (): Promise<Token[]> {
+  try {
+    const tokens = await getTokensFromMongo()
+    return tokens
   } catch (error) {
     console.log(error)
   }
