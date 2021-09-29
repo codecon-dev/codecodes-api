@@ -1,4 +1,4 @@
-import { Token, User } from "../types"
+import { User } from "../types"
 import { getUserFromMongo, createOrUpdateUser, getUsersFromMongo } from "./mongoose"
 import { getDatabaseTokens } from './token'
 

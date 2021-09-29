@@ -6,6 +6,7 @@ import cors from 'cors'
 import middlewares from './middlewares'
 import token from './routes/token'
 import user from './routes/user'
+import stats from './routes/stats'
 import docs from './routes/docs'
 
 const PORT = process.env.PORT || 8080
@@ -19,6 +20,7 @@ try {
 
   app.use('/token', token)
   app.use('/user', user)
+  app.use("/stats", stats)
   app.use("/docs", docs)
 
   app.use(middlewares.notFound)

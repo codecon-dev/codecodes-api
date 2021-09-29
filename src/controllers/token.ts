@@ -1,6 +1,7 @@
 import { ErrorResponseModel, ITokenClaimPayload, RequestResult, ClaimRequestResult } from '../types'
 import { Controller, Post, Route, Body, Security, Response } from 'tsoa'
 import claimService from '../services/claim'
+
 @Route('/token')
 export class TokenController extends Controller {
   @Response<ErrorResponseModel>('401', 'Unauthorized', {
