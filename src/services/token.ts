@@ -1,10 +1,19 @@
-import { Token } from "../types"
-import { getTokenFromMongo, createOrUpdateToken } from "./mongoose"
+import { NonClaimedTokensRequestResult, RequestResult, Token } from "../types"
+import { getTokenFromMongo, createOrUpdateToken, getTokensFromMongo, getUserFromMongo } from "./mongoose"
 
 export async function getDatabaseTokenByCode (code: string): Promise<Token> {
   try {
     const token = await getTokenFromMongo(code)
     return token
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function getDatabaseTokens (): Promise<Token[]> {
+  try {
+    const tokens = await getTokensFromMongo()
+    return tokens
   } catch (error) {
     console.log(error)
   }
@@ -40,5 +49,31 @@ export function validateTokenCode (code: string): validationResult {
 
   return {
     valid: true
+  }
+}
+
+export async function getNonClaimedTokensByUser(userId: string): Promise<NonClaimedTokensRequestResult|RequestResult> {
+  try {
+    const user = await getUserFromMongo(userId)
+    if (!user) {
+      return {
+        status: 'error',
+        message: 'User not found',
+        statusCode: 404
+      }
+    }
+    const userTokensCodes = user.tokens.map(token => token.code)
+    const allTokens = await getDatabaseTokens()
+    const nonClaimedTokens = allTokens.filter(databaseToken => {
+      return !userTokensCodes.some(userTokenCode => databaseToken.code === userTokenCode)
+    })
+
+    return {
+      status: 'success',
+      message: `The user ${user.userId} has not claimed ${nonClaimedTokens.length} tokens`,
+      data: nonClaimedTokens.map(token => `${token.code} - ${token.description}`)
+    }
+  } catch (error) {
+    console.log(error)
   }
 }

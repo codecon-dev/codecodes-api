@@ -14,4 +14,15 @@ router.get("/rank", middlewares.authentication, async (request, response, next) 
   }
 })
 
+router.get("/:userId", middlewares.authentication, async (request, response, next) => {
+  try {
+    const { userId } = request?.params
+    const controller = new UserController()
+    const user = await controller.getUser(userId)
+    return response.send(user)
+  } catch (error) {
+    next(error)
+  }
+})
+
 export default router

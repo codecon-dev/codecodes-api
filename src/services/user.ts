@@ -4,6 +4,10 @@ import { getUserFromMongo, createOrUpdateUser, getUsersFromMongo } from "./mongo
 export async function getDatabaseUserById (userId: string): Promise<User> {
   try {
     const user = await getUserFromMongo(userId)
+    if (!user) {
+      throw new Error(`Error on getDatabaseUserById: User ${userId} was not found`)
+    }
+
     return user
   } catch (error) {
     console.log(error)

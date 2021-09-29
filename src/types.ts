@@ -24,6 +24,13 @@ export type Token = {
   expireAt: string
 }
 
+export type GeneralStats = {
+  tokensQuantity: number,
+  totalClaims: number,
+  usersQuantity: number,
+  tokensByClaimQuantity: string[]
+}
+
 export type User = {
   userId: string
   tag: string
@@ -59,6 +66,20 @@ export type RankRequestResult = {
   message: string,
   statusCode: 200,
   data: CompactUser[]
+}
+
+export type StatsRequestResult = {
+  status: string,
+  message: string,
+  statusCode: 200,
+  data: GeneralStats
+}
+
+export type NonClaimedTokensRequestResult = {
+  status: string,
+  message: string,
+  statusCode: 200,
+  data: string[]
 }
 
 export interface ITokenClaimPayload {

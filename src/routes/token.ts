@@ -14,4 +14,15 @@ router.post("/claim", middlewares.authentication, async (request, response, next
   }
 })
 
+router.get("/notClaimedByUser/:userId", middlewares.authentication, async (request, response, next) => {
+  try {
+    const { userId } = request.params
+    const controller = new TokenController()
+    const user = await controller.getUserNotClaimedTokens(userId)
+    return response.send(user)
+  } catch (error) {
+    next(error)
+  }
+})
+
 export default router
