@@ -1,6 +1,5 @@
 import { User } from "../types"
 import { getUserFromMongo, createOrUpdateUser, getUsersFromMongo } from "./mongoose"
-import { getDatabaseTokens } from './token'
 
 export async function getDatabaseUserById (userId: string): Promise<User> {
   try {
@@ -33,20 +32,6 @@ export async function getDatabaseUsers (): Promise<User[]> {
   try {
     const users = await getUsersFromMongo()
     return users
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-export async function getNonClaimedTokensByUser(userId: string): Promise<string[]> {
-  try {
-    const user = await getUserFromMongo(userId)
-    const userTokensCodes = user.tokens.map(token => token.code)
-    const allTokens = await getDatabaseTokens()
-    const nonClaimedTokens = allTokens.filter(databaseToken => {
-      return !userTokensCodes.some(userTokenCode => databaseToken.code === userTokenCode)
-    })
-    return nonClaimedTokens.map(token => `${token.code} - ${token.description}`)
   } catch (error) {
     console.log(error)
   }

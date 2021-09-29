@@ -25,15 +25,4 @@ router.get("/:userId", middlewares.authentication, async (request, response, nex
   }
 })
 
-router.get("/:userId/notClaimed", middlewares.authentication, async (request, response, next) => {
-  try {
-    const { userId } = request?.params
-    const controller = new UserController()
-    const user = await controller.getUserNotClaimedTokens(userId)
-    return response.send(user)
-  } catch (error) {
-    next(error)
-  }
-})
-
 export default router

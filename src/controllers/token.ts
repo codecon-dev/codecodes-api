@@ -1,6 +1,7 @@
-import { ErrorResponseModel, ITokenClaimPayload, RequestResult, ClaimRequestResult } from '../types'
-import { Controller, Post, Route, Body, Security, Response } from 'tsoa'
+import { ErrorResponseModel, ITokenClaimPayload, RequestResult, ClaimRequestResult, NonClaimedTokensRequestResult } from '../types'
+import { Controller, Post, Get, Route, Body, Security, Response } from 'tsoa'
 import claimService from '../services/claim'
+import { getNonClaimedTokensByUser } from '../services/token'
 
 @Route('/token')
 export class TokenController extends Controller {
@@ -20,6 +21,21 @@ export class TokenController extends Controller {
       const { code, email: userId, name: tag } = body
       const claimResult = await claimService(code, userId, tag)
       return claimResult
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Response<ErrorResponseModel>('404', 'Not Found', {
+    statusCode: 404,
+    message: 'Usuário não encontrado'
+  })
+  @Security("api_key")
+  @Get('/notClaimedByUser/{userId}')
+  public async getUserNotClaimedTokens(userId: string): Promise<NonClaimedTokensRequestResult|RequestResult> {
+    try {
+      const nonClaimedTokensResult = await getNonClaimedTokensByUser(userId)
+      return nonClaimedTokensResult
     } catch (error) {
       console.log(error)
     }

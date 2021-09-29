@@ -75,6 +75,13 @@ export type StatsRequestResult = {
   data: GeneralStats
 }
 
+export type NonClaimedTokensRequestResult = {
+  status: string,
+  message: string,
+  statusCode: 200,
+  data: string[]
+}
+
 export interface ITokenClaimPayload {
   code: string;
   email: string;
