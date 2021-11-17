@@ -1,5 +1,11 @@
 import { Schema, model } from 'mongoose'
-import { User } from '../types'
+import { User, UserClaimedToken } from '../types'
+
+const UserClaimedTokenSchema = new Schema<UserClaimedToken>({
+  code: String,
+  value: Number,
+  claimedAt: String
+})
 
 const UserSchema = new Schema<User>({
   userId: {
@@ -10,15 +16,12 @@ const UserSchema = new Schema<User>({
     type: String,
     required: true
   },
-  username: {
-    type: String
-  },
   score: {
     type: Number,
     required: true
   },
   tokens: {
-    type: Array,
+    type: [UserClaimedTokenSchema],
     required: true
   }
 })

@@ -1,6 +1,12 @@
 import { Schema, model } from 'mongoose'
-import { Token } from '../types'
+import { Token, UserClaim } from '../types'
 import { validateTokenCode } from '../services/token'
+
+const UserClaimSchema = new Schema<UserClaim>({
+  tag: String,
+  id: String,
+  claimedAt: String
+})
 
 const TokenSchema = new Schema<Token>({
   code: {
@@ -36,7 +42,7 @@ const TokenSchema = new Schema<Token>({
     required: true
   },
   claimedBy: {
-    type: Array,
+    type: [UserClaimSchema],
     required: true
   },
   createdBy: {
@@ -44,11 +50,11 @@ const TokenSchema = new Schema<Token>({
     required: true
   },
   createdAt: {
-    type: Date,
+    type: String,
     required: true
   },
   expireAt: {
-    type: Date
+    type: String
   }
 })
 

@@ -7,11 +7,7 @@ export async function connectMongoose (): Promise<typeof mongoose> {
   try {
     if (mongoose.connection.readyState === 0) {
       const mongoAddress = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_URL}/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`
-      return mongoose.connect(mongoAddress, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false
-      })
+      return mongoose.connect(mongoAddress)
     }
   } catch (error) {
     console.log(error)
