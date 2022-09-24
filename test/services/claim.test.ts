@@ -32,7 +32,7 @@ const mockedToken = {
   expireAt: '2023-04-24T23:00:00.000Z'
 }
 
-describe('Claim Service', () => {
+describe.skip('Claim Service', () => {
   it('successfully claims a token', async () => {
     const claimPayload = {
       code: 'CODE',
