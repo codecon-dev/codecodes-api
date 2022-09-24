@@ -67,6 +67,8 @@ async function saveTokenClaims(userTag: string, userId: string, nowDateString: s
 
 export default async function claimService(code: string, userId: string, tag: string): Promise<RequestResult|ClaimRequestResult> {
   try {
+    console.log(`[CLAIM-SERVICE] User ${userId} (${tag}) is trying to claim ${code}`)
+
     if (!config.claim.enabled) {
       return parseResponseResult('error', config.claim.disabledMessage, 422)
     }
