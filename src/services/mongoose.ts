@@ -3,10 +3,10 @@ import TokenModel from '../models/token'
 import { Token, User } from '../types'
 import UserModel from '../models/user'
 
-export async function connectMongoose (): Promise<typeof mongoose> {
+export async function connectMongoose(): Promise<typeof mongoose> {
   try {
     if (mongoose.connection.readyState === 0) {
-      const mongoAddress = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_URL}/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`
+      const mongoAddress = `${process.env.MONGODB_URI}?retryWrites=true&w=majority`
       return mongoose.connect(mongoAddress, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -18,7 +18,7 @@ export async function connectMongoose (): Promise<typeof mongoose> {
   }
 }
 
-export async function getTokenFromMongo (tokenCode: string): Promise<Token|null> {
+export async function getTokenFromMongo(tokenCode: string): Promise<Token | null> {
   try {
     await connectMongoose()
     const [token] = await TokenModel.find({ code: tokenCode }).lean()
@@ -32,7 +32,7 @@ export async function getTokenFromMongo (tokenCode: string): Promise<Token|null>
   }
 }
 
-export async function getTokensFromMongo (): Promise<Token[]> {
+export async function getTokensFromMongo(): Promise<Token[]> {
   try {
     await connectMongoose()
     const tokens = await TokenModel.find({})
@@ -47,7 +47,7 @@ export async function getTokensFromMongo (): Promise<Token[]> {
 }
 
 
-export async function createOrUpdateToken (tokenCode: string, tokenContent: Token): Promise<Token> {
+export async function createOrUpdateToken(tokenCode: string, tokenContent: Token): Promise<Token> {
   try {
     await connectMongoose()
     const token = await TokenModel.findOneAndUpdate({ code: tokenCode }, tokenContent, {
@@ -61,7 +61,7 @@ export async function createOrUpdateToken (tokenCode: string, tokenContent: Toke
   }
 }
 
-export async function getUserFromMongo (userIdOrTag: string): Promise<User|null> {
+export async function getUserFromMongo(userIdOrTag: string): Promise<User | null> {
   try {
     await connectMongoose()
     const [user] = await UserModel.find({ $or: [{ userId: userIdOrTag }, { tag: userIdOrTag }] }).lean()
@@ -75,7 +75,7 @@ export async function getUserFromMongo (userIdOrTag: string): Promise<User|null>
   }
 }
 
-export async function getUsersFromMongo (): Promise<User[]> {
+export async function getUsersFromMongo(): Promise<User[]> {
   try {
     await connectMongoose()
     const users = await UserModel.find({})
@@ -88,7 +88,7 @@ export async function getUsersFromMongo (): Promise<User[]> {
   }
 }
 
-export async function createOrUpdateUser (userId: string, userContent: User): Promise<User> {
+export async function createOrUpdateUser(userId: string, userContent: User): Promise<User> {
   try {
     await connectMongoose()
     const user = await UserModel.findOneAndUpdate({ userId: userId }, userContent, {
