@@ -4,6 +4,7 @@ import { getRankService } from '../services/rank'
 import { getDatabaseUsers, getDatabaseUserById } from '../services/user'
 
 @Route('/user')
+@Security('api_key')
 export class UserController extends Controller {
   @Response<ErrorResponseModel>('401', 'Unauthorized', {
     statusCode: 401,

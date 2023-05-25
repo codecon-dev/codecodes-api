@@ -9,7 +9,7 @@
       "api_key": {
         "type": "apiKey",
         "name": "x-apikey",
-        "in": "headers"
+        "in": "header"
       }
     }
   },

@@ -4,6 +4,7 @@ import claimService from '../services/claim'
 import { getNonClaimedTokensByUser } from '../services/token'
 
 @Route('/token')
+@Security('api_key')
 export class TokenController extends Controller {
   @Response<ErrorResponseModel>('401', 'Unauthorized', {
     statusCode: 401,
@@ -16,7 +17,7 @@ export class TokenController extends Controller {
   })
   @Security("api_key")
   @Post('/claim')
-  public async claim (@Body() body: ITokenClaimPayload): Promise<ClaimRequestResult|RequestResult> {
+  public async claim(@Body() body: ITokenClaimPayload): Promise<ClaimRequestResult | RequestResult> {
     try {
       const { code, email: userId, name: tag } = body
       const claimResult = await claimService(code, userId, tag)
@@ -32,7 +33,7 @@ export class TokenController extends Controller {
   })
   @Security("api_key")
   @Get('/notClaimedByUser/{userId}')
-  public async getUserNotClaimedTokens(userId: string): Promise<NonClaimedTokensRequestResult|RequestResult> {
+  public async getUserNotClaimedTokens(userId: string): Promise<NonClaimedTokensRequestResult | RequestResult> {
     try {
       const nonClaimedTokensResult = await getNonClaimedTokensByUser(userId)
       return nonClaimedTokensResult
