@@ -8,6 +8,8 @@ import token from './routes/token'
 import user from './routes/user'
 import stats from './routes/stats'
 import docs from './routes/docs'
+import time from './routes/time'
+
 
 const PORT = process.env.PORT || 8080
 
@@ -22,6 +24,7 @@ try {
   app.use('/user', user)
   app.use("/stats", stats)
   app.use("/docs", docs)
+  app.use("/time", time)
 
   app.use(middlewares.notFound)
   app.use(middlewares.errorHandler)
