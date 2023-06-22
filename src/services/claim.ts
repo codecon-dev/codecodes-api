@@ -3,9 +3,12 @@ import { getDatabaseUserById, updateDatabaseUser } from './user'
 import { parseResponseResult } from '../common/parseResponseResult'
 import config from '../config'
 import { UserClaim, RequestResult, Token, ClaimRequestResult } from '../types'
+import { DateTime } from 'luxon'
 
 function isExpired(expireAt: string) {
-  return expireAt && new Date(Date.now()) > new Date(expireAt)
+  const now = DateTime.now().setZone('America/Sao_Paulo')
+  const expirationDate = DateTime.fromISO(expireAt, { zone: 'America/Sao_Paulo' })
+  return expireAt && now > expirationDate
 }
 
 function hasUserAlreadyClaimed(claimedBy: UserClaim[], userId: string) {
@@ -65,7 +68,7 @@ async function saveTokenClaims(userTag: string, userId: string, nowDateString: s
   return updateDatabaseToken(updatedToken)
 }
 
-export default async function claimService(code: string, userId: string, tag: string): Promise<RequestResult|ClaimRequestResult> {
+export default async function claimService(code: string, userId: string, tag: string): Promise<RequestResult | ClaimRequestResult> {
   try {
     console.log(`[CLAIM-SERVICE] User ${userId} (${tag}) is trying to claim ${code}`)
 
