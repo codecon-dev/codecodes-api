@@ -30,7 +30,7 @@ try {
   app.use(middlewares.errorHandler)
 
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`)
+    console.log(`Server is running on port ${PORT} (http://localhost:${PORT}/docs)`)
   })
 } catch (error) {
   console.error(error)
