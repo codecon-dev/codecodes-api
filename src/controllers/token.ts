@@ -1,7 +1,7 @@
-import { ErrorResponseModel, ITokenClaimPayload, RequestResult, ClaimRequestResult, NonClaimedTokensRequestResult } from '../types'
+import { ErrorResponseModel, ITokenClaimPayload, RequestResult, ClaimRequestResult, NonClaimedTokensRequestResult, Token } from '../types'
 import { Controller, Post, Get, Route, Body, Security, Response } from 'tsoa'
 import claimService from '../services/claim'
-import { getNonClaimedTokensByUser } from '../services/token'
+import { getNonClaimedTokensByUser, getDatabaseTokenByCode, getDatabaseTokens } from '../services/token'
 
 @Route('/token')
 @Security('api_key')
@@ -37,6 +37,32 @@ export class TokenController extends Controller {
     try {
       const nonClaimedTokensResult = await getNonClaimedTokensByUser(userId)
       return nonClaimedTokensResult
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Response<ErrorResponseModel>('404', 'Not Found', {
+    statusCode: 404,
+    message: 'Token não encontrado',
+  })
+  @Security('api_key')
+  @Get('{tokenId}')
+  public async getToken(tokenId: string): Promise<Token | RequestResult> {
+    try {
+      const token = await getDatabaseTokenByCode(tokenId)
+      return token
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Security('api_key')
+  @Get('/')
+  public async getAllTokens(): Promise<Token[] | RequestResult> {
+    try {
+      const tokens = await getDatabaseTokens(true)
+      return tokens
     } catch (error) {
       console.log(error)
     }

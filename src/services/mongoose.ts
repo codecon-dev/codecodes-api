@@ -32,12 +32,19 @@ export async function getTokenFromMongo(tokenCode: string): Promise<Token | null
   }
 }
 
-export async function getTokensFromMongo(): Promise<Token[]> {
+export async function getTokensFromMongo(onlyNames?: boolean): Promise<Token[]> {
   try {
     await connectMongoose()
     const tokens = await TokenModel.find({})
     if (!tokens) {
       return []
+    }
+
+    if (onlyNames) {
+      return tokens.map(token => {
+        const { code, description, value } = token
+        return { code, description, value }
+      })
     }
 
     return tokens

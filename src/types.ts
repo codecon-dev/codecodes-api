@@ -14,14 +14,14 @@ export type Token = {
   code: string
   description: string
   value: number
-  decreaseValue: number
-  minimumValue: number
-  totalClaims: number
-  remainingClaims: number
-  claimedBy: UserClaim[]
-  createdBy: string
-  createdAt: string
-  expireAt: string
+  decreaseValue?: number
+  minimumValue?: number
+  totalClaims?: number
+  remainingClaims?: number
+  claimedBy?: UserClaim[]
+  createdBy?: string
+  createdAt?: string
+  expireAt?: string
 }
 
 export type GeneralStats = {

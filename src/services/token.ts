@@ -10,9 +10,9 @@ export async function getDatabaseTokenByCode (code: string): Promise<Token> {
   }
 }
 
-export async function getDatabaseTokens (): Promise<Token[]> {
+export async function getDatabaseTokens (onlyNames?: boolean): Promise<Token[]> {
   try {
-    const tokens = await getTokensFromMongo()
+    const tokens = await getTokensFromMongo(onlyNames)
     return tokens
   } catch (error) {
     console.log(error)
