@@ -25,4 +25,25 @@ router.get("/notClaimedByUser/:userId", middlewares.authentication, async (reque
   }
 })
 
+router.get("/:tokenId", middlewares.authentication, async (request, response, next) => {
+  try {
+    const { tokenId } = request?.params
+    const controller = new TokenController()
+    const token = await controller.getToken(tokenId)
+    return response.send(token)
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.get("/", middlewares.authentication, async (request, response, next) => {
+  try {
+    const controller = new TokenController()
+    const tokens = await controller.getAllTokens()
+    return response.send(tokens)
+  } catch (error) {
+    next(error)
+  }
+})
+
 export default router
