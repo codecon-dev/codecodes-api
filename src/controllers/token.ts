@@ -1,7 +1,7 @@
 import { ErrorResponseModel, ITokenClaimPayload, RequestResult, ClaimRequestResult, NonClaimedTokensRequestResult, Token } from '../types'
-import { Controller, Post, Get, Route, Body, Security, Response } from 'tsoa'
+import { Controller, Post, Put, Get, Route, Body, Path, Security, Response } from 'tsoa'
 import claimService from '../services/claim'
-import { getNonClaimedTokensByUser, getDatabaseTokenByCode, getDatabaseTokens } from '../services/token'
+import { getNonClaimedTokensByUser, getDatabaseTokenByCode, getDatabaseTokens, updateDatabaseToken } from '../services/token'
 
 @Route('/token')
 @Security('api_key')
@@ -63,6 +63,17 @@ export class TokenController extends Controller {
     try {
       const tokens = await getDatabaseTokens(true)
       return tokens
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Security('api_key')
+  @Put('/{tokenId}')
+  public async updateToken(@Path('tokenId') tokenId: string, @Body() token: Token): Promise<Token | RequestResult> {
+    try {
+      const tokenResult = await updateDatabaseToken(token, tokenId)
+      if(tokenResult) return tokenResult
     } catch (error) {
       console.log(error)
     }
