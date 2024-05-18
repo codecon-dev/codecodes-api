@@ -1,8 +1,10 @@
 import { Router } from 'express'
-import { TokenController } from '../controllers/token'
+import multer from 'multer'
+import { MulterRequest, TokenController } from '../controllers/token'
 import middlewares from '../middlewares'
 
 const router = Router()
+const upload = multer({ dest: 'uploads/' })
 
 router.post("/claim", middlewares.authentication, async (request, response, next) => {
   try {
@@ -41,6 +43,17 @@ router.get("/", middlewares.authentication, async (request, response, next) => {
     const controller = new TokenController()
     const tokens = await controller.getAllTokens()
     return response.send(tokens)
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.use('/import', upload.single('csv'))
+router.post("/import", middlewares.authentication, async (request: MulterRequest, response, next) => {
+  try {
+    const controller = new TokenController()
+    const importResult = await controller.importTokens(request)
+    return response.status(importResult.statusCode || 200).send(importResult)
   } catch (error) {
     next(error)
   }

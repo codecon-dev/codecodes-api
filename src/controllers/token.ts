@@ -1,8 +1,12 @@
+import { Request as ExpressRequest } from 'express'
 import { ErrorResponseModel, ITokenClaimPayload, RequestResult, ClaimRequestResult, NonClaimedTokensRequestResult, Token } from '../types'
-import { Controller, Post, Get, Route, Body, Security, Response } from 'tsoa'
+import { Controller, Post, Get, Route, Body, Security, Response, Request } from 'tsoa'
 import claimService from '../services/claim'
 import { getNonClaimedTokensByUser, getDatabaseTokenByCode, getDatabaseTokens } from '../services/token'
 
+export interface MulterRequest extends ExpressRequest {
+  file: Express.Multer.File;
+}
 @Route('/token')
 @Security('api_key')
 export class TokenController extends Controller {
@@ -63,6 +67,17 @@ export class TokenController extends Controller {
     try {
       const tokens = await getDatabaseTokens(true)
       return tokens
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Security('api_key')
+  @Post('/import')
+  public async importTokens(@Request() req: MulterRequest): Promise<RequestResult> {
+    try {
+      console.log(req.file)
+      return { status: 'success', message: 'Arquivo importado com sucesso', statusCode: 200 }
     } catch (error) {
       console.log(error)
     }
