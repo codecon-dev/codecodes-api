@@ -38,6 +38,17 @@ router.get("/:tokenId", middlewares.authentication, async (request, response, ne
   }
 })
 
+router.put("/:tokenId", middlewares.authentication, async (request, response, next) => {
+  try {
+    const { tokenId } = request?.params
+    const controller = new TokenController()
+    const token = await controller.updateToken(tokenId, request.body)
+    return response.send(token)
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.get("/", middlewares.authentication, async (request, response, next) => {
   try {
     const controller = new TokenController()
@@ -54,6 +65,16 @@ router.post("/import", middlewares.authentication, async (request: MulterRequest
     const controller = new TokenController()
     const importResult = await controller.importTokens(request)
     return response.status(importResult.statusCode || 200).send(importResult)
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.post("/", middlewares.authentication, async (request, response, next) => {
+  try {
+    const controller = new TokenController()
+    const token = await controller.create(request.body)
+    return response.send(token)
   } catch (error) {
     next(error)
   }

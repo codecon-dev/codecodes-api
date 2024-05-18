@@ -1,8 +1,22 @@
 import { Request as ExpressRequest } from 'express'
-import { ErrorResponseModel, ITokenClaimPayload, RequestResult, ClaimRequestResult, NonClaimedTokensRequestResult, Token } from '../types'
-import { Controller, Post, Get, Route, Body, Security, Response, Request } from 'tsoa'
+import { Controller, Post, Get, Route, Body, Security, Response, Request, Put, Path } from 'tsoa'
+import {
+  ErrorResponseModel,
+  ITokenClaimPayload,
+  ITokenPayload,
+  RequestResult,
+  ClaimRequestResult,
+  NonClaimedTokensRequestResult,
+  Token
+} from '../types'
+import {
+  getNonClaimedTokensByUser,
+  getDatabaseTokenByCode,
+  getDatabaseTokens,
+  crateDatabaseToken,
+  updateDatabaseToken
+} from '../services/token'
 import claimService from '../services/claim'
-import { getNonClaimedTokensByUser, getDatabaseTokenByCode, getDatabaseTokens } from '../services/token'
 
 export interface MulterRequest extends ExpressRequest {
   file: Express.Multer.File;
@@ -78,6 +92,32 @@ export class TokenController extends Controller {
     try {
       console.log(req.file)
       return { status: 'success', message: 'Arquivo importado com sucesso', statusCode: 200 }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Security('api_key')
+  @Put('/{tokenId}')
+  public async updateToken(@Path('tokenId') tokenId: string, @Body() token: Token): Promise<Token | RequestResult> {
+    try {
+      const tokenResult = await updateDatabaseToken(token, tokenId)
+      if(tokenResult) return tokenResult
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Response<ErrorResponseModel>('409', 'Conflict', {
+    statusCode: 409,
+    message: 'Token já existe',
+  })
+  @Security("api_key")
+  @Post('/')
+  public async create(@Body() body: ITokenPayload): Promise<Token | RequestResult> {
+    try {
+      const token = await crateDatabaseToken(body)
+      if (token) return token
     } catch (error) {
       console.log(error)
     }
