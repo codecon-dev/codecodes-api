@@ -88,6 +88,16 @@ export interface ITokenClaimPayload {
   name: string;
 }
 
+export interface ITokenPayload {
+  code: string
+  description: string
+  value: number
+  totalClaims?: number
+  decreaseValue?: number
+  minimumValue?: number
+  expireAt?: string
+}
+
 export interface ErrorResponseModel {
   statusCode: number;
   message: string;

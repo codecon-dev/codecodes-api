@@ -1,7 +1,20 @@
-import { ErrorResponseModel, ITokenClaimPayload, RequestResult, ClaimRequestResult, NonClaimedTokensRequestResult, Token } from '../types'
 import { Controller, Post, Get, Route, Body, Security, Response } from 'tsoa'
+import {
+  ErrorResponseModel,
+  ITokenClaimPayload,
+  ITokenPayload,
+  RequestResult,
+  ClaimRequestResult,
+  NonClaimedTokensRequestResult,
+  Token
+} from '../types'
+import {
+  getNonClaimedTokensByUser,
+  getDatabaseTokenByCode,
+  getDatabaseTokens,
+  crateDatabaseToken
+} from '../services/token'
 import claimService from '../services/claim'
-import { getNonClaimedTokensByUser, getDatabaseTokenByCode, getDatabaseTokens } from '../services/token'
 
 @Route('/token')
 @Security('api_key')
@@ -63,6 +76,21 @@ export class TokenController extends Controller {
     try {
       const tokens = await getDatabaseTokens(true)
       return tokens
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Response<ErrorResponseModel>('409', 'Conflict', {
+    statusCode: 409,
+    message: 'Token já existe',
+  })
+  @Security("api_key")
+  @Post('/')
+  public async create(@Body() body: ITokenPayload): Promise<Token | RequestResult> {
+    try {
+      const token = await crateDatabaseToken(body)
+      if (token) return token
     } catch (error) {
       console.log(error)
     }
