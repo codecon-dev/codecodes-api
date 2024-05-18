@@ -13,8 +13,9 @@ import {
   getNonClaimedTokensByUser,
   getDatabaseTokenByCode,
   getDatabaseTokens,
-  crateDatabaseToken,
-  updateDatabaseToken
+  createDatabaseToken,
+  updateDatabaseToken,
+  importTokens
 } from '../services/token'
 import claimService from '../services/claim'
 
@@ -86,12 +87,16 @@ export class TokenController extends Controller {
     }
   }
 
-  @Security('api_key')
-  @Post('/import')
-  public async importTokens(@Request() req: MulterRequest): Promise<RequestResult> {
+  @Response<ErrorResponseModel>('409', 'Conflict', {
+    statusCode: 409,
+    message: 'Token já existe',
+  })
+  @Security("api_key")
+  @Post('/')
+  public async create(@Body() body: ITokenPayload): Promise<RequestResult> {
     try {
-      console.log(req.file)
-      return { status: 'success', message: 'Arquivo importado com sucesso', statusCode: 200 }
+      const requestResult = await createDatabaseToken(body)
+      return requestResult
     } catch (error) {
       console.log(error)
     }
@@ -99,25 +104,21 @@ export class TokenController extends Controller {
 
   @Security('api_key')
   @Put('/{tokenId}')
-  public async updateToken(@Path('tokenId') tokenId: string, @Body() token: Token): Promise<Token | RequestResult> {
+  public async updateToken(@Path('tokenId') tokenId: string, @Body() token: Token): Promise<RequestResult> {
     try {
-      const tokenResult = await updateDatabaseToken(token, tokenId)
-      if(tokenResult) return tokenResult
+      const result = await updateDatabaseToken(token, tokenId)
+      return result
     } catch (error) {
       console.log(error)
     }
   }
 
-  @Response<ErrorResponseModel>('409', 'Conflict', {
-    statusCode: 409,
-    message: 'Token já existe',
-  })
-  @Security("api_key")
-  @Post('/')
-  public async create(@Body() body: ITokenPayload): Promise<Token | RequestResult> {
+  @Security('api_key')
+  @Post('/import')
+  public async importTokens(@Request() req: MulterRequest): Promise<RequestResult> {
     try {
-      const token = await crateDatabaseToken(body)
-      if (token) return token
+      const result = importTokens(req)
+      return result
     } catch (error) {
       console.log(error)
     }

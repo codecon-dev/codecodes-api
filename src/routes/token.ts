@@ -73,8 +73,8 @@ router.post("/import", middlewares.authentication, async (request: MulterRequest
 router.post("/", middlewares.authentication, async (request, response, next) => {
   try {
     const controller = new TokenController()
-    const token = await controller.create(request.body)
-    return response.send(token)
+    const requestResult = await controller.create(request.body)
+    return response.status(requestResult.statusCode || 200).send(requestResult)
   } catch (error) {
     next(error)
   }

@@ -2,7 +2,7 @@ import parseCsv from 'csv-parser'
 import fs from 'fs'
 import { Token } from '../types'
 
-export async function readAndMapCsvTokens (csvFilePath): Promise<Token[]> {
+export async function readAndMapCsvTokens (csvFilePath: string): Promise<Token[]> {
   return new Promise((resolve, reject) => {
     const tokens = []
     fs.createReadStream(csvFilePath)
@@ -25,7 +25,8 @@ export async function readAndMapCsvTokens (csvFilePath): Promise<Token[]> {
           totalClaims: totalClaims,
           remainingClaims: totalClaims,
           expireAt: expireDate,
-          createdAt
+          createdAt,
+          createdBy: 'API'
         })
       })
       .on('end', async () => {
