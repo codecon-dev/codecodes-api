@@ -1,3 +1,4 @@
+import { readAndMapCsvTokens } from "../common/files"
 import { NonClaimedTokensRequestResult, RequestResult, Token } from "../types"
 import { getTokenFromMongo, createOrUpdateToken, getTokensFromMongo, getUserFromMongo } from "./mongoose"
 
@@ -75,5 +76,29 @@ export async function getNonClaimedTokensByUser(userId: string): Promise<NonClai
     }
   } catch (error) {
     console.log(error)
+  }
+}
+
+export async function importToken (file): Promise<void> {
+  try {
+    const tokens = await readAndMapCsvTokens(file)
+
+    const failedTokens = []
+    for (let index = 0; index < tokens.length; index++) {
+      const token = tokens[index]
+      const success = await createDatabaseToken(token)
+      if (!success) {
+        failedTokens.push(token.code)
+        console.log(`Token ${token.code} deu ruim =/`)
+        continue
+      }
+      console.log(`Token ${token.code} criado!`)
+    }
+
+    await removeOrUpdateReaction(awaitReaction, true)
+    return message.channel.send(`Dos ${tokens.length} tokens, ${failedTokens.length} deram ruim: ${failedTokens.join(', ')}`)
+  } catch (error) {
+    message.channel.send('Dang, something went very wrong. Try asking for help. Anyone?')
+    handleMessageError(error, message)
   }
 }
