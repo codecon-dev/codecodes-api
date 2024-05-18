@@ -19,6 +19,32 @@ export async function getDatabaseTokens (onlyNames?: boolean): Promise<Token[]> 
   }
 }
 
+export async function crateDatabaseToken(token: Token): Promise<Token|false> {
+  try {
+    const tokenAlreadyExists = await getTokenFromMongo(token.code)
+
+    if (tokenAlreadyExists) {
+      return false
+    }
+
+    const newToken = {
+      decreaseValue: 0,
+      minimumValue: 0,
+      totalClaims: Infinity,
+      remainingClaims: token.totalClaims || Infinity,
+      claimedBy: [],
+      createdBy: 'API',
+      createdAt: new Date().toISOString(),
+      ...token
+    }
+
+    return updateDatabaseToken(newToken)
+  } catch (error) {
+    console.log(error)
+    return false
+  }
+}
+
 export async function updateDatabaseToken (token: Token, tokenId?: string): Promise<Token|false> {
   try {
     const code = tokenId || token.code

@@ -57,4 +57,14 @@ router.get("/", middlewares.authentication, async (request, response, next) => {
   }
 })
 
+router.post("/", middlewares.authentication, async (request, response, next) => {
+  try {
+    const controller = new TokenController()
+    const token = await controller.create(request.body)
+    return response.send(token)
+  } catch (error) {
+    next(error)
+  }
+})
+
 export default router
