@@ -45,9 +45,9 @@ export async function crateDatabaseToken(token: Token): Promise<Token|false> {
   }
 }
 
-export async function updateDatabaseToken (token: Token): Promise<Token|false> {
+export async function updateDatabaseToken (token: Token, tokenId?: string): Promise<Token|false> {
   try {
-    const { code } = token
+    const code = tokenId || token.code
 
     const updatedToken = await createOrUpdateToken(code, token)
     if (!updatedToken) {
