@@ -110,9 +110,10 @@ export default async function claimService(code: string, userId: string, tag: st
     }
 
     const databaseUpdatedToken = await saveTokenClaims(tag, userId, nowDateString, token)
-    if (!databaseUpdatedToken) {
+    if (databaseUpdatedToken.status === 'error') {
       return parseResponseResult('error', 'Putz, deu ruim ao atualizar o token. Entre em contato com um administrador.', 422)
     }
+
     return {
       status: 'success',
       message: `Boa! Você ganhou ${scoreAcquired} pontos e agora está com ${userClaimSuccess.score} pontos!`,

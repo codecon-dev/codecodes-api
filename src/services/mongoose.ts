@@ -53,13 +53,22 @@ export async function getTokensFromMongo(onlyNames?: boolean): Promise<Token[]> 
   }
 }
 
+export async function createToken(tokenContent: Token): Promise<Token> {
+  try {
+    await connectMongoose()
+    const token = await TokenModel.create(tokenContent)
+    return token
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 
-export async function createOrUpdateToken(tokenCode: string, tokenContent: Token): Promise<Token> {
+export async function updateToken(tokenCode: string, tokenContent: Token): Promise<Token> {
   try {
     await connectMongoose()
     const token = await TokenModel.findOneAndUpdate({ code: tokenCode }, tokenContent, {
-      new: true,
-      upsert: true
+      new: true
     })
     await token.save()
     return token

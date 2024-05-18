@@ -1,3 +1,5 @@
+import { Request as ExpressRequest } from 'express'
+import { Controller, Post, Get, Route, Body, Security, Response, Request, Put, Path } from 'tsoa'
 import {
   ErrorResponseModel,
   ITokenClaimPayload,
@@ -11,11 +13,15 @@ import {
   getNonClaimedTokensByUser,
   getDatabaseTokenByCode,
   getDatabaseTokens,
-  crateDatabaseToken,
-  updateDatabaseToken
+  createDatabaseToken,
+  updateDatabaseToken,
+  importTokens
 } from '../services/token'
 import claimService from '../services/claim'
 
+export interface MulterRequest extends ExpressRequest {
+  file: Express.Multer.File;
+}
 @Route('/token')
 @Security('api_key')
 export class TokenController extends Controller {
@@ -80,17 +86,6 @@ export class TokenController extends Controller {
       console.log(error)
     }
   }
-=
-  @Security('api_key')
-  @Put('/{tokenId}')
-  public async updateToken(@Path('tokenId') tokenId: string, @Body() token: Token): Promise<Token | RequestResult> {
-    try {
-      const tokenResult = await updateDatabaseToken(token, tokenId)
-      if(tokenResult) return tokenResult
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   @Response<ErrorResponseModel>('409', 'Conflict', {
     statusCode: 409,
@@ -98,10 +93,32 @@ export class TokenController extends Controller {
   })
   @Security("api_key")
   @Post('/')
-  public async create(@Body() body: ITokenPayload): Promise<Token | RequestResult> {
+  public async create(@Body() body: ITokenPayload): Promise<RequestResult> {
     try {
-      const token = await crateDatabaseToken(body)
-      if (token) return token
+      const requestResult = await createDatabaseToken(body)
+      return requestResult
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Security('api_key')
+  @Put('/{tokenId}')
+  public async updateToken(@Path('tokenId') tokenId: string, @Body() token: Token): Promise<RequestResult> {
+    try {
+      const result = await updateDatabaseToken(token, tokenId)
+      return result
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Security('api_key')
+  @Post('/import')
+  public async importTokens(@Request() req: MulterRequest): Promise<RequestResult> {
+    try {
+      const result = importTokens(req)
+      return result
     } catch (error) {
       console.log(error)
     }

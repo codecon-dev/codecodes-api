@@ -1,5 +1,7 @@
+import { readAndMapCsvTokens } from "../common/files"
+import { MulterRequest } from "../controllers/token"
 import { NonClaimedTokensRequestResult, RequestResult, Token } from "../types"
-import { getTokenFromMongo, createOrUpdateToken, getTokensFromMongo, getUserFromMongo } from "./mongoose"
+import { getTokenFromMongo, updateToken, getTokensFromMongo, getUserFromMongo, createToken } from "./mongoose"
 
 export async function getDatabaseTokenByCode (code: string): Promise<Token> {
   try {
@@ -19,44 +21,72 @@ export async function getDatabaseTokens (onlyNames?: boolean): Promise<Token[]> 
   }
 }
 
-export async function crateDatabaseToken(token: Token): Promise<Token|false> {
+export async function createDatabaseToken(tokenData: Token): Promise<RequestResult> {
   try {
-    const tokenAlreadyExists = await getTokenFromMongo(token.code)
+    const tokenAlreadyExists = await getTokenFromMongo(tokenData.code)
 
     if (tokenAlreadyExists) {
-      return false
+      return {
+        status: "error",
+        message: "Este token já existe!",
+        statusCode: 409
+      }
     }
 
-    const newToken = {
+    const token = await createToken({
       decreaseValue: 0,
       minimumValue: 0,
       totalClaims: Infinity,
-      remainingClaims: token.totalClaims || Infinity,
+      remainingClaims: tokenData.totalClaims || Infinity,
       claimedBy: [],
       createdBy: 'API',
       createdAt: new Date().toISOString(),
-      ...token
+      ...tokenData
+    })
+
+    return {
+      status: "success",
+      message: "Token criado com sucesso",
+      statusCode: 200,
+      data: token
     }
 
-    return updateDatabaseToken(newToken)
   } catch (error) {
     console.log(error)
-    return false
+    return {
+      status: "error",
+      message: error,
+      statusCode: 500
+    }
   }
 }
 
-export async function updateDatabaseToken (token: Token, tokenId?: string): Promise<Token|false> {
+export async function updateDatabaseToken(token: Token, tokenId?: string): Promise<RequestResult> {
   try {
     const code = tokenId || token.code
 
-    const updatedToken = await createOrUpdateToken(code, token)
+    const updatedToken = await updateToken(code, token)
     if (!updatedToken) {
-      throw new Error(`Error on Token Update: Token ${code} was not found`)
+      return {
+        status: "error",
+        message: "Token não encontrado",
+        statusCode: 404
+      }
     }
-    return updatedToken
+
+    return {
+      status: "success",
+      message: "Token atualizado com sucesso",
+      statusCode: 200,
+      data: updatedToken
+    }
   } catch (error) {
     console.log(error)
-    return false
+    return {
+      status: "error",
+      message: error,
+      statusCode: 500
+    }
   }
 }
 
@@ -101,5 +131,43 @@ export async function getNonClaimedTokensByUser(userId: string): Promise<NonClai
     }
   } catch (error) {
     console.log(error)
+  }
+}
+
+export async function importTokens(request: MulterRequest): Promise<RequestResult> {
+  try {
+    const tokens = await readAndMapCsvTokens(request.file.path)
+
+    const failedTokens = []
+    for (let index = 0; index < tokens.length; index++) {
+      const token = tokens[index]
+      const tokenRequest = await createDatabaseToken(token)
+      if (tokenRequest.status !== 'success') {
+        failedTokens.push(token.code)
+        console.log(`Token ${token.code} deu ruim =/`)
+        continue
+      }
+      console.log(`Token ${token.code} criado!`)
+    }
+
+    if (failedTokens.length === tokens.length) {
+      return {
+        status: 'error',
+        message: "Todos os tokens falharam",
+        statusCode: 409
+      }
+    }
+
+    return {
+      status: 'success',
+      message: `Processado com sucesso. Dos ${tokens.length} tokens, ${failedTokens.length} deram ruim: ${failedTokens.join(', ')}`,
+      statusCode: 200
+    }
+  } catch (error) {
+    return {
+      status: 'error',
+      message: "Ops! Algo deu errado.",
+      statusCode: 500
+    }
   }
 }
