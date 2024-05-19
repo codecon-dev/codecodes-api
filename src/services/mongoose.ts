@@ -53,6 +53,15 @@ export async function getTokensFromMongo(onlyNames?: boolean): Promise<Token[]> 
   }
 }
 
+export async function getLatestClaimedTokens(): Promise<Token[]> {
+  const tokens = await TokenModel.aggregate([
+    { $unwind: '$claimedBy' },
+    { $sort: { 'claimedBy.claimedAt': -1 } }
+  ])
+
+  return tokens
+}
+
 export async function createToken(tokenContent: Token): Promise<Token> {
   try {
     await connectMongoose()
