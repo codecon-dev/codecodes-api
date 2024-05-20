@@ -62,6 +62,28 @@ export async function getLatestClaimedTokens(): Promise<Token[]> {
   return tokens
 }
 
+export async function getClaimsPerHour(): Promise<{ date: string; count: number; }[]> {
+  const tokens = await TokenModel.aggregate([
+    { $unwind: '$claimedBy' },
+    {
+      $group: {
+        _id: {
+          $dateToString: {
+            format: '%Y-%m-%d-%H',
+            date: { $toDate: '$claimedBy.claimedAt' },
+            timezone: '-03:00'
+          }
+        },
+        count: { $sum: 1 }
+      }
+    },
+    { $sort: { _id: 1 } },
+    { $project: { _id: 0, date: '$_id', count: 1 } }
+  ])
+
+  return tokens.map(token => ({ date: token.date, count: token.count }))
+}
+
 export async function createToken(tokenContent: Token): Promise<Token> {
   try {
     await connectMongoose()

@@ -1,5 +1,5 @@
 import { GeneralStats, Token } from "../types"
-import { getLatestClaimedTokens } from "./mongoose"
+import { getLatestClaimedTokens, getClaimsPerHour } from "./mongoose"
 import { getDatabaseTokens } from "./token"
 import { getDatabaseUsers } from "./user"
 
@@ -16,6 +16,7 @@ export async function getStats(): Promise<GeneralStats> {
     const tokensWithNoClaims = tokens.filter(token => token.claimedBy.length === 0)
     const tokensWithClaims = tokens.filter(token => token.claimedBy.length > 0)
     const latestClaimedTokens = await getLatestClaimedTokens()
+    const claimsPerDate = await getClaimsPerHour()
 
     const users = await getDatabaseUsers()
     return {
@@ -25,7 +26,8 @@ export async function getStats(): Promise<GeneralStats> {
       tokensByClaimQuantity: compactTokensByClaimQuantityOrder,
       tokensWithClaims: tokensWithClaims.length,
       tokensWithNoClaims: tokensWithNoClaims.length,
-      latestClaimedTokens
+      latestClaimedTokens,
+      claimsPerDate
     }
   } catch (error) {
     console.log(error)

@@ -32,6 +32,7 @@ export type GeneralStats = {
   tokensWithClaims: number,
   tokensWithNoClaims: number,
   latestClaimedTokens: Token[]
+  claimsPerDate: { date: string; count: number; }[]
 }
 
 export type User = {
