@@ -70,6 +70,16 @@ router.post("/import", middlewares.authentication, async (request: MulterRequest
   }
 })
 
+router.post("/batch", middlewares.authentication, async (request, response, next) => {
+  try {
+    const controller = new TokenController()
+    const importResult = await controller.batchCreate(request.body)
+    return response.status(importResult.statusCode || 200).send(importResult)
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.post("/", middlewares.authentication, async (request, response, next) => {
   try {
     const controller = new TokenController()

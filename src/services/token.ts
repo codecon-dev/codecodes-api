@@ -1,6 +1,6 @@
 import { readAndMapCsvTokens } from "../common/files"
 import { MulterRequest } from "../controllers/token"
-import { NonClaimedTokensRequestResult, RequestResult, Token } from "../types"
+import { ITokenPayload, NonClaimedTokensRequestResult, RequestResult, Token } from "../types"
 import { getTokenFromMongo, updateToken, getTokensFromMongo, getUserFromMongo, createToken } from "./mongoose"
 
 export async function getDatabaseTokenByCode (code: string): Promise<Token> {
@@ -134,35 +134,41 @@ export async function getNonClaimedTokensByUser(userId: string): Promise<NonClai
   }
 }
 
+export async function batchCreate(tokens: ITokenPayload[]): Promise<RequestResult> {
+  const failedTokens = []
+  for (let index = 0; index < tokens.length; index++) {
+    const token = tokens[index]
+    const tokenRequest = await createDatabaseToken(token)
+    if (tokenRequest.status !== 'success') {
+      failedTokens.push(token.code)
+      console.log(`Token ${token.code} deu ruim =/`)
+      continue
+    }
+    console.log(`Token ${token.code} criado!`)
+  }
+
+  if (failedTokens.length === tokens.length) {
+    return {
+      status: 'error',
+      message: "Todos os tokens falharam",
+      statusCode: 409
+    }
+  }
+
+  return {
+    status: 'success',
+    message: `Processado com sucesso. Dos ${tokens.length} tokens, ${failedTokens.length} deram ruim: ${failedTokens.join(', ')}`,
+    statusCode: 200
+  }
+}
+
 export async function importTokens(request: MulterRequest): Promise<RequestResult> {
   try {
     const tokens = await readAndMapCsvTokens(request.file.path)
 
-    const failedTokens = []
-    for (let index = 0; index < tokens.length; index++) {
-      const token = tokens[index]
-      const tokenRequest = await createDatabaseToken(token)
-      if (tokenRequest.status !== 'success') {
-        failedTokens.push(token.code)
-        console.log(`Token ${token.code} deu ruim =/`)
-        continue
-      }
-      console.log(`Token ${token.code} criado!`)
-    }
+    const importResult = await batchCreate(tokens)
 
-    if (failedTokens.length === tokens.length) {
-      return {
-        status: 'error',
-        message: "Todos os tokens falharam",
-        statusCode: 409
-      }
-    }
-
-    return {
-      status: 'success',
-      message: `Processado com sucesso. Dos ${tokens.length} tokens, ${failedTokens.length} deram ruim: ${failedTokens.join(', ')}`,
-      statusCode: 200
-    }
+    return importResult
   } catch (error) {
     return {
       status: 'error',

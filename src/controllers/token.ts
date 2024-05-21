@@ -15,7 +15,8 @@ import {
   getDatabaseTokens,
   createDatabaseToken,
   updateDatabaseToken,
-  importTokens
+  importTokens,
+  batchCreate
 } from '../services/token'
 import claimService from '../services/claim'
 
@@ -118,6 +119,17 @@ export class TokenController extends Controller {
   public async importTokens(@Request() req: MulterRequest): Promise<RequestResult> {
     try {
       const result = importTokens(req)
+      return result
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Security('api_key')
+  @Post('/batch')
+  public async batchCreate(@Body() tokens: ITokenPayload[]): Promise<RequestResult> {
+    try {
+      const result = batchCreate(tokens)
       return result
     } catch (error) {
       console.log(error)
