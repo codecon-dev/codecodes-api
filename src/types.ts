@@ -28,7 +28,7 @@ export type GeneralStats = {
   tokensQuantity: number,
   totalClaims: number,
   usersQuantity: number,
-  tokensByClaimQuantity: string[],
+  tokensByClaimQuantity: { code: string; claims: number }[],
   tokensWithClaims: number,
   tokensWithNoClaims: number,
   latestClaimedTokens: Token[]

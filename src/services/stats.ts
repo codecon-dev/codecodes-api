@@ -12,7 +12,7 @@ export async function getStats(): Promise<GeneralStats> {
     const tokens = await getDatabaseTokens()
     const totalClaims = tokens.reduce((totalClaims, token) => token.claimedBy.length + totalClaims, 0)
     const tokensByClaimQuantityOrder = [...tokens].sort((a, b) => b.claimedBy.length - a.claimedBy.length)
-    const compactTokensByClaimQuantityOrder = tokensByClaimQuantityOrder.map(compactToken)
+    const compactTokensByClaimQuantityOrder = tokensByClaimQuantityOrder.map((token) => ({ code: token.code, claims: token.claimedBy.length }))
     const tokensWithNoClaims = tokens.filter(token => token.claimedBy.length === 0)
     const tokensWithClaims = tokens.filter(token => token.claimedBy.length > 0)
     const latestClaimedTokens = await getLatestClaimedTokens()
