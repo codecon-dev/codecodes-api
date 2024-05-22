@@ -138,7 +138,12 @@ export async function batchCreate(tokens: ITokenPayload[]): Promise<RequestResul
   const failedTokens = []
   for (let index = 0; index < tokens.length; index++) {
     const token = tokens[index]
-    const tokenRequest = await createDatabaseToken(token)
+    const tokenRequest = await createDatabaseToken({
+      ...token,
+      totalClaims: token.totalClaims == 0 ? Infinity : token.totalClaims,
+      remainingClaims: token.totalClaims == 0 ? Infinity : token.totalClaims,
+    })
+
     if (tokenRequest.status !== 'success') {
       failedTokens.push(token.code)
       console.log(`Token ${token.code} deu ruim =/`)
