@@ -5,7 +5,7 @@
   "author": "Marcelo 'Mark' Kopmann",
   "scripts": {
     "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec\"",
-    "build": "tsoa spec && tsc && cp src/swagger.json dist/swagger.json",
+    "build": "tsoa spec && tsc -p tsconfig.build.json && cp src/swagger.json dist/swagger.json",
     "start": "node dist/index.js",
     "test": "jest test",
     "doc": "tsoa spec",
