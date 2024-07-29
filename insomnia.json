@@ -1,1 +1,255 @@
-{"_type":"export","__export_format":4,"__export_date":"2021-09-05T13:32:00.783Z","__export_source":"insomnia.desktop.app:v2021.5.0","resources":[{"_id":"req_80ef6f2605d04fcca039e7b4374350ac","parentId":"fld_a636d28a6a8046c398d2854fa2bc6866","modified":1630848669202,"created":1628978528733,"url":"http://localhost:8080/token/claim","name":"Local - Claim","description":"","method":"POST","body":{"mimeType":"application/json","text":"{\n\t\"code\": \"CODE\",\n\t\"email\": \"mark@email.com\",\n\t\"name\": \"Mark Kop\"\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json","id":"pair_deb2faf7d0ca458b9b262e43ec089eb5"},{"id":"pair_b2c39cdc7c404e84a05ab50adb0103c7","name":"x-apikey","value":"{{ _.apikey }}","description":""}],"authentication":{},"metaSortKey":-1628978528733,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_a636d28a6a8046c398d2854fa2bc6866","parentId":"wrk_e0726252a41d4d35aec21c9f1dd56984","modified":1628980633166,"created":1628980633166,"name":"Local","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1628980633166,"_type":"request_group"},{"_id":"wrk_e0726252a41d4d35aec21c9f1dd56984","parentId":null,"modified":1628978500394,"created":1628978500394,"name":"Codecon","description":"","scope":"collection","_type":"workspace"},{"_id":"req_08d2817bb79642c68f7dc8d06f857012","parentId":"fld_a636d28a6a8046c398d2854fa2bc6866","modified":1630848164336,"created":1629146754001,"url":"http://localhost:8080/user/rank","name":"Local - Rank","description":"","method":"GET","body":{"mimeType":"application/json","text":""},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json","id":"pair_deb2faf7d0ca458b9b262e43ec089eb5"},{"id":"pair_b2c39cdc7c404e84a05ab50adb0103c7","name":"x-apikey","value":"{{ _.apikey }}","description":""}],"authentication":{},"metaSortKey":-1628978528708,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_d78f02c07e0848c89cfd2767920d7710","parentId":"fld_a636d28a6a8046c398d2854fa2bc6866","modified":1630848177988,"created":1629146807642,"url":"http://localhost:8080/docs","name":"Local - Docs","description":"","method":"GET","body":{"mimeType":"application/json","text":""},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json","id":"pair_deb2faf7d0ca458b9b262e43ec089eb5"},{"id":"pair_b2c39cdc7c404e84a05ab50adb0103c7","name":"x-apikey","value":"{{ _.apikey }}","description":""}],"authentication":{},"metaSortKey":-1628978528695.5,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_627eba67aa6849af9ba68e502db9a814","parentId":"fld_50c55e2305a140a6993efdc2dfe3d1b2","modified":1630848682603,"created":1628980589032,"url":"{{ _.base_url }}/token/claim","name":"Prod - Claim","description":"","method":"POST","body":{"mimeType":"application/json","text":"{\n\t\"code\": \"CODE\",\n\t\"email\": \"mark@email.com\",\n\t\"name\": \"Mark Kop\"\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json","id":"pair_deb2faf7d0ca458b9b262e43ec089eb5"},{"id":"pair_b2c39cdc7c404e84a05ab50adb0103c7","name":"x-apikey","value":"{{ _.apikey }}","description":""}],"authentication":{},"metaSortKey":-1628978528683,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_50c55e2305a140a6993efdc2dfe3d1b2","parentId":"wrk_e0726252a41d4d35aec21c9f1dd56984","modified":1628980629915,"created":1628980629915,"name":"Production","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1628980629915,"_type":"request_group"},{"_id":"req_15acfd744b7742c5935954efb11a2f49","parentId":"fld_50c55e2305a140a6993efdc2dfe3d1b2","modified":1630848200477,"created":1629147246637,"url":"{{ _.base_url }}/user/rank","name":"Prod - Rank","description":"","method":"GET","body":{"mimeType":"application/json","text":""},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json","id":"pair_deb2faf7d0ca458b9b262e43ec089eb5"},{"id":"pair_b2c39cdc7c404e84a05ab50adb0103c7","name":"x-apikey","value":"{{ _.apikey }}","description":""}],"authentication":{},"metaSortKey":-1628978528633,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"env_7b12eefe682227b690b9e5eb5bc0d0042543f6af","parentId":"wrk_e0726252a41d4d35aec21c9f1dd56984","modified":1628978500490,"created":1628978500490,"name":"Base Environment","data":{},"dataPropertyOrder":null,"color":null,"isPrivate":false,"metaSortKey":1628978500490,"_type":"environment"},{"_id":"jar_7b12eefe682227b690b9e5eb5bc0d0042543f6af","parentId":"wrk_e0726252a41d4d35aec21c9f1dd56984","modified":1628978500494,"created":1628978500494,"name":"Default Jar","cookies":[],"_type":"cookie_jar"},{"_id":"spc_0c9888d679404edb920a0636607c90c9","parentId":"wrk_e0726252a41d4d35aec21c9f1dd56984","modified":1628978500401,"created":1628978500401,"fileName":"Codecon","contents":"","contentType":"yaml","_type":"api_spec"}]}
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2021-09-05T13:32:00.783Z",
+  "__export_source": "insomnia.desktop.app:v2021.5.0",
+  "resources": [
+    {
+      "_id": "req_80ef6f2605d04fcca039e7b4374350ac",
+      "parentId": "fld_a636d28a6a8046c398d2854fa2bc6866",
+      "modified": 1630848669202,
+      "created": 1628978528733,
+      "url": "http://localhost:8080/token/claim",
+      "name": "Local - Claim",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"code\": \"CODE\",\n\t\"email\": \"mark@email.com\",\n\t\"name\": \"Mark Kop\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_deb2faf7d0ca458b9b262e43ec089eb5"
+        },
+        {
+          "id": "pair_b2c39cdc7c404e84a05ab50adb0103c7",
+          "name": "x-apikey",
+          "value": "{{ _.apikey }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1628978528733,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_a636d28a6a8046c398d2854fa2bc6866",
+      "parentId": "wrk_e0726252a41d4d35aec21c9f1dd56984",
+      "modified": 1628980633166,
+      "created": 1628980633166,
+      "name": "Local",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1628980633166,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_e0726252a41d4d35aec21c9f1dd56984",
+      "parentId": null,
+      "modified": 1628978500394,
+      "created": 1628978500394,
+      "name": "Codecon",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_08d2817bb79642c68f7dc8d06f857012",
+      "parentId": "fld_a636d28a6a8046c398d2854fa2bc6866",
+      "modified": 1630848164336,
+      "created": 1629146754001,
+      "url": "http://localhost:8080/user/rank",
+      "name": "Local - Rank",
+      "description": "",
+      "method": "GET",
+      "body": { "mimeType": "application/json", "text": "" },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_deb2faf7d0ca458b9b262e43ec089eb5"
+        },
+        {
+          "id": "pair_b2c39cdc7c404e84a05ab50adb0103c7",
+          "name": "x-apikey",
+          "value": "{{ _.apikey }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1628978528708,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_d78f02c07e0848c89cfd2767920d7710",
+      "parentId": "fld_a636d28a6a8046c398d2854fa2bc6866",
+      "modified": 1630848177988,
+      "created": 1629146807642,
+      "url": "http://localhost:8080/docs",
+      "name": "Local - Docs",
+      "description": "",
+      "method": "GET",
+      "body": { "mimeType": "application/json", "text": "" },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_deb2faf7d0ca458b9b262e43ec089eb5"
+        },
+        {
+          "id": "pair_b2c39cdc7c404e84a05ab50adb0103c7",
+          "name": "x-apikey",
+          "value": "{{ _.apikey }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1628978528695.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_627eba67aa6849af9ba68e502db9a814",
+      "parentId": "fld_50c55e2305a140a6993efdc2dfe3d1b2",
+      "modified": 1630848682603,
+      "created": 1628980589032,
+      "url": "{{ _.base_url }}/token/claim",
+      "name": "Prod - Claim",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"code\": \"CODE\",\n\t\"email\": \"mark@email.com\",\n\t\"name\": \"Mark Kop\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_deb2faf7d0ca458b9b262e43ec089eb5"
+        },
+        {
+          "id": "pair_b2c39cdc7c404e84a05ab50adb0103c7",
+          "name": "x-apikey",
+          "value": "{{ _.apikey }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1628978528683,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_50c55e2305a140a6993efdc2dfe3d1b2",
+      "parentId": "wrk_e0726252a41d4d35aec21c9f1dd56984",
+      "modified": 1628980629915,
+      "created": 1628980629915,
+      "name": "Production",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1628980629915,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_15acfd744b7742c5935954efb11a2f49",
+      "parentId": "fld_50c55e2305a140a6993efdc2dfe3d1b2",
+      "modified": 1630848200477,
+      "created": 1629147246637,
+      "url": "{{ _.base_url }}/user/rank",
+      "name": "Prod - Rank",
+      "description": "",
+      "method": "GET",
+      "body": { "mimeType": "application/json", "text": "" },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_deb2faf7d0ca458b9b262e43ec089eb5"
+        },
+        {
+          "id": "pair_b2c39cdc7c404e84a05ab50adb0103c7",
+          "name": "x-apikey",
+          "value": "{{ _.apikey }}",
+          "description": ""
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1628978528633,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_7b12eefe682227b690b9e5eb5bc0d0042543f6af",
+      "parentId": "wrk_e0726252a41d4d35aec21c9f1dd56984",
+      "modified": 1628978500490,
+      "created": 1628978500490,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1628978500490,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_7b12eefe682227b690b9e5eb5bc0d0042543f6af",
+      "parentId": "wrk_e0726252a41d4d35aec21c9f1dd56984",
+      "modified": 1628978500494,
+      "created": 1628978500494,
+      "name": "Default Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    },
+    {
+      "_id": "spc_0c9888d679404edb920a0636607c90c9",
+      "parentId": "wrk_e0726252a41d4d35aec21c9f1dd56984",
+      "modified": 1628978500401,
+      "created": 1628978500401,
+      "fileName": "Codecon",
+      "contents": "",
+      "contentType": "yaml",
+      "_type": "api_spec"
+    }
+  ]
+}

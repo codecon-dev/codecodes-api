@@ -1,11 +1,17 @@
-import { User } from "../types"
-import { getUserFromMongo, createOrUpdateUser, getUsersFromMongo } from "./mongoose"
+import { User } from '../types'
+import {
+  getUserFromMongo,
+  createOrUpdateUser,
+  getUsersFromMongo
+} from './mongoose'
 
-export async function getDatabaseUserById (userId: string): Promise<User> {
+export async function getDatabaseUserById(userId: string): Promise<User> {
   try {
     const user = await getUserFromMongo(userId)
     if (!user) {
-      throw new Error(`Error on getDatabaseUserById: User ${userId} was not found`)
+      throw new Error(
+        `Error on getDatabaseUserById: User ${userId} was not found`
+      )
     }
 
     return user
@@ -13,7 +19,7 @@ export async function getDatabaseUserById (userId: string): Promise<User> {
     console.log(error)
   }
 }
-export async function updateDatabaseUser (user: User): Promise<User|false> {
+export async function updateDatabaseUser(user: User): Promise<User | false> {
   try {
     const { userId } = user
 
@@ -28,7 +34,7 @@ export async function updateDatabaseUser (user: User): Promise<User|false> {
   }
 }
 
-export async function getDatabaseUsers (): Promise<User[]> {
+export async function getDatabaseUsers(): Promise<User[]> {
   try {
     const users = await getUsersFromMongo()
     return users

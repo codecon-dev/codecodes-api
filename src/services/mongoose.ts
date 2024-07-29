@@ -18,7 +18,9 @@ export async function connectMongoose(): Promise<typeof mongoose> {
   }
 }
 
-export async function getTokenFromMongo(tokenCode: string): Promise<Token | null> {
+export async function getTokenFromMongo(
+  tokenCode: string
+): Promise<Token | null> {
   try {
     await connectMongoose()
     const [token] = await TokenModel.find({ code: tokenCode }).lean()
@@ -32,7 +34,9 @@ export async function getTokenFromMongo(tokenCode: string): Promise<Token | null
   }
 }
 
-export async function getTokensFromMongo(onlyNames?: boolean): Promise<Token[]> {
+export async function getTokensFromMongo(
+  onlyNames?: boolean
+): Promise<Token[]> {
   try {
     await connectMongoose()
     const tokens = await TokenModel.find({})
@@ -41,7 +45,7 @@ export async function getTokensFromMongo(onlyNames?: boolean): Promise<Token[]> 
     }
 
     if (onlyNames) {
-      return tokens.map(token => {
+      return tokens.map((token) => {
         const { code, description, value } = token
         return { code, description, value }
       })
@@ -62,7 +66,9 @@ export async function getLatestClaimedTokens(): Promise<Token[]> {
   return tokens
 }
 
-export async function getClaimsPerHour(): Promise<{ date: string; count: number; }[]> {
+export async function getClaimsPerHour(): Promise<
+  { date: string; count: number }[]
+> {
   const tokens = await TokenModel.aggregate([
     { $unwind: '$claimedBy' },
     {
@@ -81,7 +87,7 @@ export async function getClaimsPerHour(): Promise<{ date: string; count: number;
     { $project: { _id: 0, date: '$_id', count: 1 } }
   ])
 
-  return tokens.map(token => ({ date: token.date, count: token.count }))
+  return tokens.map((token) => ({ date: token.date, count: token.count }))
 }
 
 export async function createToken(tokenContent: Token): Promise<Token> {
@@ -95,12 +101,19 @@ export async function createToken(tokenContent: Token): Promise<Token> {
   }
 }
 
-export async function updateToken(tokenCode: string, tokenContent: Token): Promise<Token> {
+export async function updateToken(
+  tokenCode: string,
+  tokenContent: Token
+): Promise<Token> {
   try {
     await connectMongoose()
-    const token = await TokenModel.findOneAndUpdate({ code: tokenCode }, tokenContent, {
-      new: true
-    })
+    const token = await TokenModel.findOneAndUpdate(
+      { code: tokenCode },
+      tokenContent,
+      {
+        new: true
+      }
+    )
     await token.save()
     return token
   } catch (error) {
@@ -108,10 +121,14 @@ export async function updateToken(tokenCode: string, tokenContent: Token): Promi
   }
 }
 
-export async function getUserFromMongo(userIdOrTag: string): Promise<User | null> {
+export async function getUserFromMongo(
+  userIdOrTag: string
+): Promise<User | null> {
   try {
     await connectMongoose()
-    const [user] = await UserModel.find({ $or: [{ userId: userIdOrTag }, { tag: userIdOrTag }] }).lean()
+    const [user] = await UserModel.find({
+      $or: [{ userId: userIdOrTag }, { tag: userIdOrTag }]
+    }).lean()
     if (!user) {
       return null
     }
@@ -135,13 +152,20 @@ export async function getUsersFromMongo(): Promise<User[]> {
   }
 }
 
-export async function createOrUpdateUser(userId: string, userContent: User): Promise<User> {
+export async function createOrUpdateUser(
+  userId: string,
+  userContent: User
+): Promise<User> {
   try {
     await connectMongoose()
-    const user = await UserModel.findOneAndUpdate({ userId: userId }, userContent, {
-      new: true,
-      upsert: true
-    })
+    const user = await UserModel.findOneAndUpdate(
+      { userId: userId },
+      userContent,
+      {
+        new: true,
+        upsert: true
+      }
+    )
     await user.save()
     return user
   } catch (error) {

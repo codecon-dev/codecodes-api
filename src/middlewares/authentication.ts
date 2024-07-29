@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
 import { parseResponseResult } from '../common/parseResponseResult'
 
-export function authentication (request: Request, response: Response, next: NextFunction): void {
+export function authentication(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
   try {
     const hasPartnerAuthentication = response.locals['has-partner-auth']
     const partnerApiKey = request.headers['x-partnerapikey']

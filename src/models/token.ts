@@ -7,8 +7,8 @@ const TokenSchema = new Schema<Token>({
     type: String,
     required: true,
     validate: {
-      validator: code => validateTokenCode(code).valid,
-      message: props => `${props.value} is not a valid token code`
+      validator: (code) => validateTokenCode(code).valid,
+      message: (props) => `${props.value} is not a valid token code`
     }
   },
   description: {
