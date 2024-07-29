@@ -14,10 +14,14 @@ export function authentication(
     let requiredApiKey = [process.env.APIKEY]
     if (hasPartnerAuthentication && partnerApiKey) {
       providedApiKey = partnerApiKey
-      requiredApiKey = [process.env.SOFT_EXPERT_APIKEY, process.env.SUPER_VIZ_APIKEY]
+      requiredApiKey = [
+        process.env.SOFT_EXPERT_APIKEY,
+        process.env.SUPER_VIZ_APIKEY
+      ]
       apiKeyErrorMessage = 'Wrong or missing partner apikey'
     }
-    if (!requiredApiKey.includes(providedApiKey as string)) throw new Error(apiKeyErrorMessage)
+    if (!requiredApiKey.includes(providedApiKey as string))
+      throw new Error(apiKeyErrorMessage)
     next()
   } catch (error) {
     response.json(parseResponseResult(error, error.message))
