@@ -7,9 +7,15 @@
     "allowSyntheticDefaultImports": true,
     "outDir": "dist",
     "rootDir": "src",
+    "baseUrl": "./src",
     "experimentalDecorators": true,
-  },
-  "exclude": [
-    "test"
-  ]
+    "paths": {
+      "@common/*": ["common/*"],
+      "@controllers/*": ["controllers/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@models/*": ["models/*"],
+      "@routes/*": ["routes/*"],
+      "@services/*": ["services/*"]
+    }
+  }
 }

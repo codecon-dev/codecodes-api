@@ -1,4 +1,4 @@
-import { getRankService } from '../../src/services/rank'
+import { getRankService } from '@services/rank'
 
 const usersWithSameScoreButDifferentTokensQuantity = [
   {

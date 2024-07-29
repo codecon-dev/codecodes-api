@@ -1,13 +1,13 @@
-import claimService from '../../src/services/claim'
-import { getDatabaseTokenByCode, updateDatabaseToken } from '../../src/services/token'
-import { getDatabaseUserById, updateDatabaseUser } from '../../src/services/user'
+import claimService from '@services/claim'
+import { getDatabaseTokenByCode, updateDatabaseToken } from '@services/token'
+import { getDatabaseUserById, updateDatabaseUser } from '@services/user'
 
-jest.mock('../../src/services/token', () => ({
+jest.mock('@services/token', () => ({
   getDatabaseTokenByCode: jest.fn(),
   updateDatabaseToken: jest.fn()
 }))
 
-jest.mock('../../src/services/user', () => ({
+jest.mock('@services/user', () => ({
   getDatabaseUserById: jest.fn(),
   updateDatabaseUser: jest.fn()
 }))
@@ -29,10 +29,10 @@ const mockedToken = {
     }
   ],
   createdAt: '2021-03-13T21:45:59.143Z',
-  expireAt: '2023-04-24T23:00:00.000Z'
+  expireAt: new Date()
 }
 
-describe.skip('Claim Service', () => {
+describe('Claim Service', () => {
   it('successfully claims a token', async () => {
     const claimPayload = {
       code: 'CODE',
