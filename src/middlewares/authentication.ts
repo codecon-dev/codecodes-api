@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { parseResponseResult } from '@common/parseResponseResult'
+import { parseResponseResult } from '../common/parseResponseResult'
 
 export function authentication (request: Request, response: Response, next: NextFunction): void {
   try {

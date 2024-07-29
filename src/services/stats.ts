@@ -1,11 +1,7 @@
-import { GeneralStats, Token } from "../types"
+import { GeneralStats } from "../types"
 import { getLatestClaimedTokens, getClaimsPerHour } from "./mongoose"
 import { getDatabaseTokens } from "./token"
 import { getDatabaseUsers } from "./user"
-
-function compactToken(token: Token) {
-  return `${token.code} - ${token.claimedBy.length} claims`
-}
 
 export async function getStats(): Promise<GeneralStats> {
   try {

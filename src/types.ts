@@ -63,7 +63,7 @@ export type RequestResult = {
   status: string,
   message: string,
   statusCode?: number,
-  data?: any
+  data?: unknown
 }
 
 export type RankRequestResult = {

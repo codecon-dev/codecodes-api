@@ -3,7 +3,7 @@ import fs from 'fs'
 import { Token } from '../types'
 
 export async function readAndMapCsvTokens (csvFilePath: string): Promise<Token[]> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const tokens = []
     fs.createReadStream(csvFilePath)
       .pipe(parseCsv())
