@@ -24,7 +24,7 @@ export interface MulterRequest extends ExpressRequest {
   file: Express.Multer.File;
 }
 @Route('/token')
-@Security('api_key')
+@Security({'api_key': [], 'partner_api_key': []})
 export class TokenController extends Controller {
   @Response<ErrorResponseModel>('401', 'Unauthorized', {
     statusCode: 401,
@@ -93,6 +93,7 @@ export class TokenController extends Controller {
     message: 'Token já existe',
   })
   @Security("api_key")
+  @Security("partner_api_key")
   @Post('/')
   public async create(@Body() body: ITokenPayload): Promise<RequestResult> {
     try {
