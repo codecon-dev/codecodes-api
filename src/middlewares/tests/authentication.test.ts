@@ -4,7 +4,8 @@ import { authentication } from '@middlewares/authentication'
 describe('Authentication Middleware', () => {
   beforeEach(() => jest.clearAllMocks())
   process.env.APIKEY = 'fake-api-key'
-  process.env.PARTNER_APIKEY = 'fake-partner-api-key'
+  process.env.SOFT_EXPERT_APIKEY = 'fake-partner-api-key'
+  process.env.SUPER_VIZ_APIKEY = 'fake-partner-api-key'
   const nextMock = jest.fn()
   const jsonMock = jest.fn()
   const responseMock = {
