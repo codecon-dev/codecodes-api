@@ -80,7 +80,7 @@ router.post("/batch", middlewares.authentication, async (request, response, next
   }
 })
 
-router.post("/", [middlewares.setHasPartnerAuth, middlewares.authentication], async (request, response, next) => {
+router.post("/", middlewares.authentication, async (request, response, next) => {
   try {
     const controller = new TokenController()
     const requestResult = await controller.create(request.body)
