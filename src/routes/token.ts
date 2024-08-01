@@ -106,7 +106,7 @@ router.post(
 
 router.post(
   '/',
-  [middlewares.setHasPartnerAuth, middlewares.authentication],
+  middlewares.authentication,
   async (request, response, next) => {
     try {
       const controller = new TokenController()
