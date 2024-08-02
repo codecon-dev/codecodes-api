@@ -2,13 +2,18 @@ import parseCsv from 'csv-parser'
 import fs from 'fs'
 import { Token } from '../types'
 
-export async function readAndMapCsvTokens (csvFilePath: string): Promise<Token[]> {
-  return new Promise((resolve, reject) => {
+export async function readAndMapCsvTokens(
+  csvFilePath: string
+): Promise<Token[]> {
+  return new Promise((resolve) => {
     const tokens = []
     fs.createReadStream(csvFilePath)
       .pipe(parseCsv())
       .on('data', (data) => {
-        const mmddyyDate = data['Data de expiração'].replace(/(.*?)\/(.*?)\//, '$2/$1/')
+        const mmddyyDate = data['Data de expiração'].replace(
+          /(.*?)\/(.*?)\//,
+          '$2/$1/'
+        )
         const utcDate = new Date(mmddyyDate)
         const expireDate = utcDate.toISOString()
 

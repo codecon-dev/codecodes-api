@@ -4,7 +4,7 @@ import { TimeController } from '../controllers/time'
 
 const router = Router()
 
-router.get("/now", async (request, response, next) => {
+router.get('/now', async (request, response, next) => {
   try {
     const controller = new TimeController()
     const currentTime = controller.getCurrentTime()

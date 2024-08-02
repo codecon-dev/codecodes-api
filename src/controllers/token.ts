@@ -1,5 +1,16 @@
 import { Request as ExpressRequest } from 'express'
-import { Controller, Post, Get, Route, Body, Security, Response, Request, Put, Path } from 'tsoa'
+import {
+  Controller,
+  Post,
+  Get,
+  Route,
+  Body,
+  Security,
+  Response,
+  Request,
+  Put,
+  Path
+} from 'tsoa'
 import {
   ErrorResponseModel,
   ITokenClaimPayload,
@@ -21,23 +32,24 @@ import {
 import claimService from '../services/claim'
 
 export interface MulterRequest extends ExpressRequest {
-  file: Express.Multer.File;
+  file: Express.Multer.File
 }
 @Route('/token')
-@Security('api_key')
+@Security({ api_key: [], partner_api_key: [] })
 export class TokenController extends Controller {
   @Response<ErrorResponseModel>('401', 'Unauthorized', {
     statusCode: 401,
     message: 'Wrong or missing apikey'
   })
-
   @Response<ErrorResponseModel>('422', 'Unprocessable Entity', {
     statusCode: 422,
     message: 'Código não encontrado'
   })
-  @Security("api_key")
+  @Security('api_key')
   @Post('/claim')
-  public async claim(@Body() body: ITokenClaimPayload): Promise<ClaimRequestResult | RequestResult> {
+  public async claim(
+    @Body() body: ITokenClaimPayload
+  ): Promise<ClaimRequestResult | RequestResult> {
     try {
       const { code, email: userId, name: tag } = body
       const claimResult = await claimService(code, userId, tag)
@@ -51,9 +63,11 @@ export class TokenController extends Controller {
     statusCode: 404,
     message: 'Usuário não encontrado'
   })
-  @Security("api_key")
+  @Security('api_key')
   @Get('/notClaimedByUser/{userId}')
-  public async getUserNotClaimedTokens(userId: string): Promise<NonClaimedTokensRequestResult | RequestResult> {
+  public async getUserNotClaimedTokens(
+    userId: string
+  ): Promise<NonClaimedTokensRequestResult | RequestResult> {
     try {
       const nonClaimedTokensResult = await getNonClaimedTokensByUser(userId)
       return nonClaimedTokensResult
@@ -64,7 +78,7 @@ export class TokenController extends Controller {
 
   @Response<ErrorResponseModel>('404', 'Not Found', {
     statusCode: 404,
-    message: 'Token não encontrado',
+    message: 'Token não encontrado'
   })
   @Security('api_key')
   @Get('{tokenId}')
@@ -90,9 +104,10 @@ export class TokenController extends Controller {
 
   @Response<ErrorResponseModel>('409', 'Conflict', {
     statusCode: 409,
-    message: 'Token já existe',
+    message: 'Token já existe'
   })
-  @Security("api_key")
+  @Security('api_key')
+  @Security('partner_api_key')
   @Post('/')
   public async create(@Body() body: ITokenPayload): Promise<RequestResult> {
     try {
@@ -105,7 +120,10 @@ export class TokenController extends Controller {
 
   @Security('api_key')
   @Put('/{tokenId}')
-  public async updateToken(@Path('tokenId') tokenId: string, @Body() token: Token): Promise<RequestResult> {
+  public async updateToken(
+    @Path('tokenId') tokenId: string,
+    @Body() token: Token
+  ): Promise<RequestResult> {
     try {
       const result = await updateDatabaseToken(token, tokenId)
       return result
@@ -116,7 +134,9 @@ export class TokenController extends Controller {
 
   @Security('api_key')
   @Post('/import')
-  public async importTokens(@Request() req: MulterRequest): Promise<RequestResult> {
+  public async importTokens(
+    @Request() req: MulterRequest
+  ): Promise<RequestResult> {
     try {
       const result = importTokens(req)
       return result
@@ -127,7 +147,9 @@ export class TokenController extends Controller {
 
   @Security('api_key')
   @Post('/batch')
-  public async batchCreate(@Body() tokens: ITokenPayload[]): Promise<RequestResult> {
+  public async batchCreate(
+    @Body() tokens: ITokenPayload[]
+  ): Promise<RequestResult> {
     try {
       const result = batchCreate(tokens)
       return result

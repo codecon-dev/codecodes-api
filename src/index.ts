@@ -10,7 +10,6 @@ import stats from './routes/stats'
 import docs from './routes/docs'
 import time from './routes/time'
 
-
 const PORT = process.env.PORT || 8080
 
 try {
@@ -22,15 +21,17 @@ try {
 
   app.use('/token', token)
   app.use('/user', user)
-  app.use("/stats", stats)
-  app.use("/docs", docs)
-  app.use("/time", time)
+  app.use('/stats', stats)
+  app.use('/docs', docs)
+  app.use('/time', time)
 
   app.use(middlewares.notFound)
   app.use(middlewares.errorHandler)
 
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT} (http://localhost:${PORT}/docs)`)
+    console.log(
+      `Server is running on port ${PORT} (http://localhost:${PORT}/docs)`
+    )
   })
 } catch (error) {
   console.error(error)

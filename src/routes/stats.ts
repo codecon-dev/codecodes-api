@@ -4,7 +4,7 @@ import middlewares from '../middlewares'
 
 const router = Router()
 
-router.get("/", middlewares.authentication, async (request, response, next) => {
+router.get('/', middlewares.authentication, async (request, response, next) => {
   try {
     const controller = new StatsController()
     const claimResult = await controller.getStats()

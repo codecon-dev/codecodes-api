@@ -2,15 +2,14 @@ name: Build - Test
 
 on:
   push:
-      branches-ignore:
-        - 'master'
+    branches-ignore:
+      - 'master'
   pull_request:
-      branches-ignore:
-        - 'master'
+    branches-ignore:
+      - 'master'
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -18,11 +17,11 @@ jobs:
         node-version: [16.6.1]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn
-    - run: yarn test
-    - run: yarn build
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn
+      - run: yarn test
+      - run: yarn build

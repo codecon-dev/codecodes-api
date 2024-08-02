@@ -38,19 +38,23 @@ describe('Claim Service', () => {
       code: 'CODE',
       userId: 'mark@email.com',
       tag: 'Mark Kop'
-    };
-    (getDatabaseTokenByCode as jest.Mock).mockResolvedValueOnce(mockedToken);
-    (updateDatabaseToken as jest.Mock).mockResolvedValueOnce(true);
-    (getDatabaseUserById as jest.Mock).mockResolvedValueOnce(null);
-    (updateDatabaseUser as jest.Mock).mockResolvedValueOnce({ score: 18 })
-    const claimResult = await claimService(claimPayload.code, claimPayload.userId, claimPayload.tag)
+    }
+    ;(getDatabaseTokenByCode as jest.Mock).mockResolvedValueOnce(mockedToken)
+    ;(updateDatabaseToken as jest.Mock).mockResolvedValueOnce(true)
+    ;(getDatabaseUserById as jest.Mock).mockResolvedValueOnce(null)
+    ;(updateDatabaseUser as jest.Mock).mockResolvedValueOnce({ score: 18 })
+    const claimResult = await claimService(
+      claimPayload.code,
+      claimPayload.userId,
+      claimPayload.tag
+    )
     const expectedResult = {
-      message: "Boa! Você ganhou 18 pontos e agora está com 18 pontos!",
-      status: "success",
+      message: 'Boa! Você ganhou 18 pontos e agora está com 18 pontos!',
+      status: 'success',
       statusCode: 200,
       data: {
         scoreAcquired: 18,
-        totalScore: 18,
+        totalScore: 18
       }
     }
     expect(claimResult).toEqual(expectedResult)

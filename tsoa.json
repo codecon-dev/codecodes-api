@@ -10,6 +10,11 @@
         "type": "apiKey",
         "name": "x-apikey",
         "in": "header"
+      },
+      "partner_api_key": {
+        "type": "apiKey",
+        "name": "x-partnerApiKey",
+        "in": "header"
       }
     }
   },

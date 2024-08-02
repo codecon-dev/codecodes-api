@@ -25,14 +25,14 @@ export type Token = {
 }
 
 export type GeneralStats = {
-  tokensQuantity: number,
-  totalClaims: number,
-  usersQuantity: number,
-  tokensByClaimQuantity: { code: string; claims: number }[],
-  tokensWithClaims: number,
-  tokensWithNoClaims: number,
+  tokensQuantity: number
+  totalClaims: number
+  usersQuantity: number
+  tokensByClaimQuantity: { code: string; claims: number }[]
+  tokensWithClaims: number
+  tokensWithNoClaims: number
   latestClaimedTokens: Token[]
-  claimsPerDate: { date: string; count: number; }[]
+  claimsPerDate: { date: string; count: number }[]
 }
 
 export type User = {
@@ -43,54 +43,54 @@ export type User = {
 }
 
 export type CompactUser = {
-  userId: string,
-  score: number,
-  tag: string,
+  userId: string
+  score: number
+  tag: string
   claims: number
 }
 
 export type ClaimRequestResult = {
-  status: string,
-  message: string,
-  statusCode: 200,
+  status: string
+  message: string
+  statusCode: 200
   data: {
-    scoreAcquired: number,
+    scoreAcquired: number
     totalScore: number
   }
 }
 
 export type RequestResult = {
-  status: string,
-  message: string,
-  statusCode?: number,
-  data?: any
+  status: string
+  message: string
+  statusCode?: number
+  data?: unknown
 }
 
 export type RankRequestResult = {
-  status: string,
-  message: string,
-  statusCode: 200,
+  status: string
+  message: string
+  statusCode: 200
   data: CompactUser[]
 }
 
 export type StatsRequestResult = {
-  status: string,
-  message: string,
-  statusCode: 200,
+  status: string
+  message: string
+  statusCode: 200
   data: GeneralStats
 }
 
 export type NonClaimedTokensRequestResult = {
-  status: string,
-  message: string,
-  statusCode: 200,
+  status: string
+  message: string
+  statusCode: 200
   data: string[]
 }
 
 export interface ITokenClaimPayload {
-  code: string;
-  email: string;
-  name: string;
+  code: string
+  email: string
+  name: string
 }
 
 export interface ITokenPayload {
@@ -104,6 +104,6 @@ export interface ITokenPayload {
 }
 
 export interface ErrorResponseModel {
-  statusCode: number;
-  message: string;
+  statusCode: number
+  message: string
 }
