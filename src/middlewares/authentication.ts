@@ -27,4 +27,3 @@ export function authentication(
     response.json(parseResponseResult(error, error.message))
   }
 }
-
