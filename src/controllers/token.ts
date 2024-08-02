@@ -125,7 +125,7 @@ export class TokenController extends Controller {
       const requestResult = await createDatabaseToken({
         code,
         value: Number(process.env.PARTNER_CODE_VALUE) || 0,
-        description: 'Código elatório gerado para parceiro',
+        description: 'Código aleatório gerado para parceiro',
         expireAt: '2024-09-07T18:00:00.00Z'
       })
       return requestResult
