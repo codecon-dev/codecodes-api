@@ -1,4 +1,9 @@
-import { ErrorResponseModel, RankRequestResult, RequestResult, User } from '../types'
+import {
+  ErrorResponseModel,
+  RankRequestResult,
+  RequestResult,
+  User
+} from '../types'
 import { Controller, Get, Route, Security, Response } from 'tsoa'
 import { getRankService } from '../services/rank'
 import { getDatabaseUsers, getDatabaseUserById } from '../services/user'
@@ -10,7 +15,7 @@ export class UserController extends Controller {
     statusCode: 401,
     message: 'Wrong or missing apikey'
   })
-  @Security("api_key")
+  @Security('api_key')
   @Get('/rank')
   public async getRank(): Promise<RankRequestResult | RequestResult> {
     try {
@@ -26,7 +31,7 @@ export class UserController extends Controller {
     statusCode: 404,
     message: 'Usuário não encontrado'
   })
-  @Security("api_key")
+  @Security('api_key')
   @Get('{userId}')
   public async getUser(userId: string): Promise<User> {
     try {

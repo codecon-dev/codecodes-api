@@ -1,4 +1,4 @@
-import { UserClaimedToken, RankRequestResult, User } from "../types"
+import { UserClaimedToken, RankRequestResult, User } from '../types'
 
 function getLastClaimedToken(user: User) {
   return user.tokens[user.tokens.length - 1]
@@ -11,7 +11,9 @@ function getUserClaimDate(token: UserClaimedToken) {
 function getAndSubtractUsersLastClaimDates(previousUser: User, nextUser: User) {
   const previousLastClaimedToken = getLastClaimedToken(previousUser)
   const nextLastClaimedToken = getLastClaimedToken(nextUser)
-  const previousLastClaimedTokenDate = getUserClaimDate(previousLastClaimedToken)
+  const previousLastClaimedTokenDate = getUserClaimDate(
+    previousLastClaimedToken
+  )
   const nextLastClaimedTokenDate = getUserClaimDate(nextLastClaimedToken)
   return Number(nextLastClaimedTokenDate) - Number(previousLastClaimedTokenDate)
 }
@@ -21,8 +23,10 @@ function sortUsers(users: User[]) {
     const hasSameScore = nextUser.score === previousUser.score
     if (!hasSameScore) return nextUser.score - previousUser.score
 
-    const hasSameClaimsNumber = nextUser.tokens.length === previousUser.tokens.length
-    if (!hasSameClaimsNumber) return nextUser.tokens.length - previousUser.tokens.length
+    const hasSameClaimsNumber =
+      nextUser.tokens.length === previousUser.tokens.length
+    if (!hasSameClaimsNumber)
+      return nextUser.tokens.length - previousUser.tokens.length
 
     return getAndSubtractUsersLastClaimDates(nextUser, previousUser)
   })
@@ -37,11 +41,13 @@ function mapCompactUsers(users: User[]) {
   }))
 }
 
-export async function getRankService(users: User[]): Promise<RankRequestResult> {
+export async function getRankService(
+  users: User[]
+): Promise<RankRequestResult> {
   const usersSorted = sortUsers(users)
   const compactUsers = mapCompactUsers(usersSorted)
   return {
-    status: "sucess",
+    status: 'sucess',
     statusCode: 200,
     message: `Rank for all ${users.length} users`,
     data: compactUsers

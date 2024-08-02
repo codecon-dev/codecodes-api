@@ -9,8 +9,7 @@ export class StatsController extends Controller {
     statusCode: 401,
     message: 'Wrong or missing apikey'
   })
-
-  @Security("api_key")
+  @Security('api_key')
   @Get('/')
   public async getStats(): Promise<StatsRequestResult | RequestResult> {
     try {
@@ -20,7 +19,7 @@ export class StatsController extends Controller {
         message: 'Informações obtidas com sucesso',
         statusCode: 200,
         data: {
-          ...stats,
+          ...stats
         }
       }
     } catch (error) {

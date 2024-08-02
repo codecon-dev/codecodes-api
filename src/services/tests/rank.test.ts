@@ -71,14 +71,18 @@ const usersWithSameScoreAndTokensButDifferentLastClaimDates = [
 
 describe('Rank Service', () => {
   it('unties users based on their claims number', async () => {
-    const rank = await getRankService(usersWithSameScoreButDifferentTokensQuantity)
+    const rank = await getRankService(
+      usersWithSameScoreButDifferentTokensQuantity
+    )
     expect(rank.data[0]).toMatchObject({
       tag: 'user2'
     })
   })
 
   it('unties users based on their last claimed token timestamp', async () => {
-    const rank = await getRankService(usersWithSameScoreAndTokensButDifferentLastClaimDates)
+    const rank = await getRankService(
+      usersWithSameScoreAndTokensButDifferentLastClaimDates
+    )
     expect(rank.data[0]).toMatchObject({
       tag: 'user2'
     })
