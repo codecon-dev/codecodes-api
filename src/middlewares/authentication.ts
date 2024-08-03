@@ -13,8 +13,6 @@ export function authentication(
     let providedApiKey = request.headers['x-apikey']
     let requiredApiKey = [process.env.APIKEY]
 
-    console.log(requiredApiKey)
-
     if (hasPartnerAuthentication && partnerApiKey) {
       providedApiKey = partnerApiKey
       requiredApiKey = [
