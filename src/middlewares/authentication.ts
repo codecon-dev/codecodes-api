@@ -12,6 +12,9 @@ export function authentication(
     let apiKeyErrorMessage = 'Wrong or missing apikey'
     let providedApiKey = request.headers['x-apikey']
     let requiredApiKey = [process.env.APIKEY]
+
+    console.log(requiredApiKey)
+
     if (hasPartnerAuthentication && partnerApiKey) {
       providedApiKey = partnerApiKey
       requiredApiKey = [
