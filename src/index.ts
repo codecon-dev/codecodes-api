@@ -28,8 +28,6 @@ try {
   app.use(middlewares.notFound)
   app.use(middlewares.errorHandler)
 
-  console.log(process.env.APIKEY)
-
   app.listen(PORT, () => {
     console.log(
       `Server is running on port ${PORT} (http://localhost:${PORT}/docs)`
