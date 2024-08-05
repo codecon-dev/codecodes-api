@@ -107,11 +107,27 @@ export class TokenController extends Controller {
     message: 'Token já existe'
   })
   @Security('api_key')
-  @Security('partner_api_key')
   @Post('/')
   public async create(@Body() body: ITokenPayload): Promise<RequestResult> {
     try {
       const requestResult = await createDatabaseToken(body)
+      return requestResult
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Security('partner_api_key')
+  @Post('/partner')
+  public async createByPartner(): Promise<RequestResult> {
+    try {
+      const code = Math.random().toString(36).substring(2, 10).toUpperCase()
+      const requestResult = await createDatabaseToken({
+        code,
+        value: Number(process.env.PARTNER_CODE_VALUE) || 0,
+        description: 'Código aleatório gerado para parceiro',
+        expireAt: '2024-09-07T18:00:00.00Z'
+      })
       return requestResult
     } catch (error) {
       console.log(error)

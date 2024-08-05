@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import multer from 'multer'
 import { MulterRequest, TokenController } from '../controllers/token'
 import middlewares from '../middlewares'
@@ -111,6 +111,22 @@ router.post(
     try {
       const controller = new TokenController()
       const requestResult = await controller.create(request.body)
+      return response
+        .status(requestResult.statusCode || 200)
+        .send(requestResult)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
+router.post(
+  '/partner',
+  [middlewares.setHasPartnerAuth, middlewares.authentication],
+  async (_request: Request, response: Response, next: NextFunction) => {
+    try {
+      const controller = new TokenController()
+      const requestResult = await controller.createByPartner()
       return response
         .status(requestResult.statusCode || 200)
         .send(requestResult)
