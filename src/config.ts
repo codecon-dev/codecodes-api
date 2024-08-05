@@ -1,7 +1,6 @@
 export default {
   claim: {
-    enabled: false,
-    disabledMessage:
-      'Os resgates estão temporariamente desabilitados, volte novamente mais tarde.'
+    enabled: true,
+    disabledMessage: 'Resgates estão desabilitados. Obrigado por participar!'
   }
 }
