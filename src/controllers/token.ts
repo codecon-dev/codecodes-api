@@ -126,7 +126,8 @@ export class TokenController extends Controller {
         code,
         value: Number(process.env.PARTNER_CODE_VALUE) || 0,
         description: 'Código aleatório gerado para parceiro',
-        expireAt: '2024-09-07T18:00:00.00Z'
+        expireAt: '2024-09-07T18:00:00.00Z',
+        totalClaims: 1
       })
       return requestResult
     } catch (error) {

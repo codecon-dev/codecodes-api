@@ -15,7 +15,8 @@ describe('Token Controller', () => {
           code: expect.any(String),
           value: 0,
           description: 'Código aleatório gerado para parceiro',
-          expireAt: '2024-09-07T18:00:00.00Z'
+          expireAt: '2024-09-07T18:00:00.00Z',
+          totalClaims: 1
         })
       )
       expect(createDatabaseToken).toHaveBeenCalledTimes(1)
