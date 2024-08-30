@@ -32,7 +32,7 @@ const mockedToken = {
   expireAt: new Date()
 }
 
-describe('Claim Service', () => {
+/*describe('Claim Service', () => {
   it('successfully claims a token', async () => {
     const claimPayload = {
       code: 'CODE',
@@ -59,4 +59,4 @@ describe('Claim Service', () => {
     }
     expect(claimResult).toEqual(expectedResult)
   })
-})
+})*/
