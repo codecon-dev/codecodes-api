@@ -1,6 +1,6 @@
 export default {
   claim: {
-    enabled: true,
-    disabledMessage: 'Resgates estão desabilitados. Obrigado por participar!'
+    enabled: false,
+    disabledMessage: 'Resgates estão desabilitados. Voltamos no dia do evento!'
   }
 }
