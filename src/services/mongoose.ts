@@ -14,7 +14,7 @@ export async function connectMongoose(): Promise<typeof mongoose> {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(`Error to connect to mongo: ${error}`)
   }
 }
 
@@ -30,7 +30,7 @@ export async function getTokenFromMongo(
 
     return token
   } catch (error) {
-    console.log(error)
+    console.log(`Error to get token from mongo: ${error}`)
   }
 }
 
@@ -53,7 +53,7 @@ export async function getTokensFromMongo(
 
     return tokens
   } catch (error) {
-    console.log(error)
+    console.log(`Error to get tokens from mongo: ${error}`)
   }
 }
 
@@ -97,7 +97,7 @@ export async function createToken(tokenContent: Token): Promise<Token> {
     const token = await TokenModel.create(tokenContent)
     return token
   } catch (error) {
-    console.log(error)
+    console.log(`Failed to create token on mongo: ${error}`)
     throw error
   }
 }
@@ -118,7 +118,7 @@ export async function updateToken(
     await token.save()
     return token
   } catch (error) {
-    console.log(error)
+    console.log(`Error to update token on mongo: ${error}`)
   }
 }
 
@@ -136,7 +136,7 @@ export async function getUserFromMongo(
 
     return user
   } catch (error) {
-    console.log(error)
+    console.log(`Failed to get user from mongo: ${error}`)
   }
 }
 
@@ -149,7 +149,7 @@ export async function getUsersFromMongo(): Promise<User[]> {
     }
     return users
   } catch (error) {
-    console.log(error)
+    console.log(`Failed to get users from mongo: ${error}`)
   }
 }
 
@@ -170,6 +170,6 @@ export async function createOrUpdateUser(
     await user.save()
     return user
   } catch (error) {
-    console.log(error)
+    console.log(`Failed to create or update user on mongo: ${error}`)
   }
 }
