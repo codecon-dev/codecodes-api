@@ -1,9 +1,9 @@
-import { getDatabaseTokenByCode, updateDatabaseToken } from './token'
-import { getDatabaseUserById, updateDatabaseUser } from './user'
+import { DateTime } from 'luxon'
 import { parseResponseResult } from '../common/parseResponseResult'
 import config from '../config'
-import { UserClaim, RequestResult, Token, ClaimRequestResult } from '../types'
-import { DateTime } from 'luxon'
+import { ClaimRequestResult, RequestResult, Token, UserClaim } from '../types'
+import { getDatabaseTokenByCode, updateDatabaseToken } from './token'
+import { getDatabaseUserById, updateDatabaseUser } from './user'
 
 function isExpired(expireAt: string) {
   const now = DateTime.now().setZone('America/Sao_Paulo')
@@ -92,20 +92,24 @@ export default async function claimService(
   tag: string
 ): Promise<RequestResult | ClaimRequestResult> {
   try {
-    console.log(
-      `[CLAIM-SERVICE] User ${userId} (${tag}) is trying to claim ${code}`
-    )
+    console.log(`[CLAIM-SERVICE] User ${userId} (${tag}) is trying to claim ${code}`)
 
+    console.log('[CLAIM-SERVICE] Checking if claim is enabled')
     if (!config.claim.enabled) {
+      console.log('[CLAIM-SERVICE] Claim is disabled')
       return parseResponseResult('error', config.claim.disabledMessage, 422)
     }
 
+    console.log('[CLAIM-SERVICE] Checking if code is provided')
     if (!code) {
+      console.log('[CLAIM-SERVICE] No code provided')
       return parseResponseResult('error', 'Nenhum código foi fornecido', 422)
     }
 
+    console.log('[CLAIM-SERVICE] Getting token from database')
     const token = await getDatabaseTokenByCode(code)
     if (!token) {
+      console.log('[CLAIM-SERVICE] Token not found')
       return parseResponseResult('error', 'Código não encontrado', 422)
     }
 
@@ -118,7 +122,9 @@ export default async function claimService(
       expireAt
     } = token
 
+    console.log('[CLAIM-SERVICE] Checking if remaining claims are available')
     if (!remainingClaims) {
+      console.log('[CLAIM-SERVICE] No remaining claims available')
       return parseResponseResult(
         'error',
         'Vish, acabaram os resgates disponíveis para esse token :(',
@@ -126,17 +132,21 @@ export default async function claimService(
       )
     }
 
+    console.log('[CLAIM-SERVICE] Checking if token is expired')
     if (isExpired(expireAt)) {
+      console.log('[CLAIM-SERVICE] Token is expired')
       return parseResponseResult('error', 'Esse token expirou :(', 422)
     }
 
+    console.log('[CLAIM-SERVICE] Checking if user has already claimed the token')
     if (hasUserAlreadyClaimed(claimedBy, userId)) {
+      console.log('[CLAIM-SERVICE] User has already claimed the token')
       return parseResponseResult('error', 'Você já resgatou esse token 👀', 422)
     }
 
     const date = new Date(Date.now())
     const nowDateString = date.toISOString()
-
+    console.log('[CLAIM-SERVICE] Computing score')
     const scoreAcquired = computeScore(
       claimedBy,
       value,
@@ -144,6 +154,7 @@ export default async function claimService(
       minimumValue
     )
 
+    console.log('[CLAIM-SERVICE] Saving user score')
     const userClaimSuccess = await saveUserScore(
       userId,
       scoreAcquired,
@@ -152,6 +163,7 @@ export default async function claimService(
       nowDateString
     )
     if (!userClaimSuccess) {
+      console.log('[CLAIM-SERVICE] Failed to update user score')
       return parseResponseResult(
         'error',
         'Putz, deu ruim ao atualizar o usuário. Entre em contato com um administrador.',
@@ -159,6 +171,7 @@ export default async function claimService(
       )
     }
 
+    console.log('[CLAIM-SERVICE] Saving token claims')
     const databaseUpdatedToken = await saveTokenClaims(
       tag,
       userId,
@@ -166,6 +179,7 @@ export default async function claimService(
       token
     )
     if (databaseUpdatedToken.status === 'error') {
+      console.log('[CLAIM-SERVICE] Failed to update token claims')
       return parseResponseResult(
         'error',
         'Putz, deu ruim ao atualizar o token. Entre em contato com um administrador.',
@@ -173,6 +187,7 @@ export default async function claimService(
       )
     }
 
+    console.log('[CLAIM-SERVICE] Claim process completed successfully')
     return {
       status: 'success',
       message: `Boa! Você ganhou ${scoreAcquired} pontos e agora está com ${userClaimSuccess.score} pontos!`,
@@ -183,7 +198,7 @@ export default async function claimService(
       }
     }
   } catch (error) {
-    console.log(error)
+    console.log('[CLAIM-SERVICE] Error occurred:', error)
     throw new Error(error)
   }
 }
