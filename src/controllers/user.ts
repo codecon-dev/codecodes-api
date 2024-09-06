@@ -1,12 +1,12 @@
+import { Controller, Get, Response, Route, Security } from 'tsoa'
+import { getRankService } from '../services/rank'
+import { checkForSuspiciousActivity, getDatabaseUserById, getDatabaseUsers } from '../services/user'
 import {
   ErrorResponseModel,
   RankRequestResult,
   RequestResult,
   User
 } from '../types'
-import { Controller, Get, Route, Security, Response } from 'tsoa'
-import { getRankService } from '../services/rank'
-import { getDatabaseUsers, getDatabaseUserById } from '../services/user'
 
 @Route('/user')
 @Security('api_key')
@@ -39,6 +39,23 @@ export class UserController extends Controller {
       return user
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  @Response<ErrorResponseModel>('500', 'Internal Server Error', {
+    statusCode: 500,
+    message: 'An error occurred while processing the request'
+  })
+  @Security('api_key')
+  @Get('/susp/check')
+  public async getSuspiciousActivity(): Promise<any[]> {
+    try {
+      const suspiciousUsers = await checkForSuspiciousActivity()
+      return suspiciousUsers
+    } catch (error) {
+      console.log(error)
+      this.setStatus(500)
+      return []
     }
   }
 }

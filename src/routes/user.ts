@@ -33,4 +33,18 @@ router.get(
   }
 )
 
+router.get(
+  '/susp/check',
+  middlewares.authentication,
+  async (request, response, next) => {
+    try {
+      const controller = new UserController()
+      const suspiciousUsers = await controller.getSuspiciousActivity()
+      return response.send(suspiciousUsers)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
 export default router
