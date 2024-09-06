@@ -7,11 +7,11 @@ import {
   Token
 } from '../types'
 import {
+  createToken,
   getTokenFromMongo,
-  updateToken,
   getTokensFromMongo,
   getUserFromMongo,
-  createToken
+  updateToken
 } from './mongoose'
 
 export async function getDatabaseTokenByCode(code: string): Promise<Token> {
@@ -203,6 +203,44 @@ export async function importTokens(
     return {
       status: 'error',
       message: 'Ops! Algo deu errado.',
+      statusCode: 500
+    }
+  }
+}
+
+export async function revertUserTokenClaims(userId: string): Promise<RequestResult> {
+  try {
+    const user = await getUserFromMongo(userId)
+    if (!user) {
+      return {
+        status: 'error',
+        message: 'User not found',
+        statusCode: 404
+      }
+    }
+
+    const userTokens = user.tokens
+    const updatePromises = userTokens.map(async (userToken) => {
+      const token = await getTokenFromMongo(userToken.code)
+      if (token) {
+        token.remainingClaims += 1
+        token.claimedBy = token.claimedBy.filter(claim => claim.id !== userId)
+        await updateToken(token.code, token)
+      }
+    })
+
+    await Promise.all(updatePromises)
+
+    return {
+      status: 'success',
+      message: `Successfully reverted all token claims for user ${userId}`,
+      statusCode: 200
+    }
+  } catch (error) {
+    console.log(`Error reverting user token claims: ${error}`)
+    return {
+      status: 'error',
+      message: 'An error occurred while reverting user token claims',
       statusCode: 500
     }
   }

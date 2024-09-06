@@ -1,35 +1,36 @@
 import { Request as ExpressRequest } from 'express'
 import {
-  Controller,
-  Post,
-  Get,
-  Route,
   Body,
-  Security,
-  Response,
-  Request,
+  Controller,
+  Get,
+  Path,
+  Post,
   Put,
-  Path
+  Request,
+  Response,
+  Route,
+  Security
 } from 'tsoa'
+import claimService from '../services/claim'
 import {
+  batchCreate,
+  createDatabaseToken,
+  getDatabaseTokenByCode,
+  getDatabaseTokens,
+  getNonClaimedTokensByUser,
+  importTokens,
+  revertUserTokenClaims,
+  updateDatabaseToken
+} from '../services/token'
+import {
+  ClaimRequestResult,
   ErrorResponseModel,
   ITokenClaimPayload,
   ITokenPayload,
-  RequestResult,
-  ClaimRequestResult,
   NonClaimedTokensRequestResult,
+  RequestResult,
   Token
 } from '../types'
-import {
-  getNonClaimedTokensByUser,
-  getDatabaseTokenByCode,
-  getDatabaseTokens,
-  createDatabaseToken,
-  updateDatabaseToken,
-  importTokens,
-  batchCreate
-} from '../services/token'
-import claimService from '../services/claim'
 
 export interface MulterRequest extends ExpressRequest {
   file: Express.Multer.File
@@ -172,6 +173,23 @@ export class TokenController extends Controller {
       return result
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  @Security('api_key')
+  @Post('/revert-user-claims')
+  public async revertUserClaims(@Body() body: { userId: string }): Promise<RequestResult> {
+    try {
+      const { userId } = body
+      const result = await revertUserTokenClaims(userId)
+      return result
+    } catch (error) {
+      console.log(error)
+      return {
+        status: 'error',
+        message: 'An error occurred while reverting user claims',
+        statusCode: 500
+      }
     }
   }
 }

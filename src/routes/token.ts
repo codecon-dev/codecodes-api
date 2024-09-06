@@ -136,4 +136,18 @@ router.post(
   }
 )
 
+router.post(
+  '/revert-user-claims',
+  middlewares.authentication,
+  async (request, response, next) => {
+    try {
+      const controller = new TokenController()
+      const result = await controller.revertUserClaims(request.body)
+      return response.status(result.statusCode || 200).send(result)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
 export default router
