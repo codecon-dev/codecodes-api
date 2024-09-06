@@ -128,7 +128,8 @@ export async function getUserFromMongo(
   try {
     await connectMongoose()
     const [user] = await UserModel.find({
-      $or: [{ userId: userIdOrTag }, { tag: userIdOrTag }]
+      $or: [{ userId: userIdOrTag }, { tag: userIdOrTag }],
+      softDeleted: { $ne: true }
     }).lean()
     if (!user) {
       return null
@@ -140,10 +141,10 @@ export async function getUserFromMongo(
   }
 }
 
-export async function getUsersFromMongo(): Promise<User[]> {
+export async function getUsersFromMongo(query = {}): Promise<User[]> {
   try {
     await connectMongoose()
-    const users = await UserModel.find({})
+    const users = await UserModel.find({ ...query, softDeleted: { $ne: true } })
     if (!users) {
       return []
     }
@@ -161,7 +162,7 @@ export async function createOrUpdateUser(
     await connectMongoose()
     const user = await UserModel.findOneAndUpdate(
       { userId: userId },
-      userContent,
+      { ...userContent, softDeleted: userContent.softDeleted ?? false },
       {
         new: true,
         upsert: true
@@ -171,5 +172,20 @@ export async function createOrUpdateUser(
     return user
   } catch (error) {
     console.log(`Failed to create or update user on mongo: ${error}`)
+  }
+}
+
+export async function softDeleteUser(userId: string): Promise<User | null> {
+  try {
+    await connectMongoose()
+    const user = await UserModel.findOneAndUpdate(
+      { userId: userId },
+      { softDeleted: true },
+      { new: true }
+    )
+    return user
+  } catch (error) {
+    console.log(`Failed to soft delete user on mongo: ${error}`)
+    return null
   }
 }

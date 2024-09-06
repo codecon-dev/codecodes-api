@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
-import { User } from '../types'
+import { SoftDeleteResult, User } from '../types'
 import {
   createOrUpdateUser,
   getUserFromMongo,
-  getUsersFromMongo
+  getUsersFromMongo,
+  softDeleteUser
 } from './mongoose'
-
 
 export async function getDatabaseUserById(userId: string): Promise<User> {
   try {
@@ -38,7 +38,7 @@ export async function updateDatabaseUser(user: User): Promise<User | false> {
 
 export async function getDatabaseUsers(): Promise<User[]> {
   try {
-    const users = await getUsersFromMongo()
+    const users = await getUsersFromMongo({ softDeleted: { $ne: true } })
     return users
   } catch (error) {
     console.log(error)
@@ -47,7 +47,7 @@ export async function getDatabaseUsers(): Promise<User[]> {
 
 export async function checkForSuspiciousActivity(): Promise<any[]> {
   try {
-    const users = await getUsersFromMongo()
+    const users = await getUsersFromMongo({ softDeleted: { $ne: true } })
     const suspiciousUsers = users.filter(user => {
       if (user.tokens.length < 10) return false
 
@@ -92,5 +92,18 @@ export async function checkForSuspiciousActivity(): Promise<any[]> {
   } catch (error) {
     console.log(error)
     return []
+  }
+}
+
+export async function softDeleteUserById(userId: string): Promise<SoftDeleteResult> {
+  try {
+    const user = await softDeleteUser(userId)
+    if (!user) {
+      return { success: false, message: `User ${userId} not found` }
+    }
+    return { success: true, message: `User ${userId} has been soft deleted`, user }
+  } catch (error) {
+    console.log(`Error soft deleting user ${userId}:`, error)
+    return { success: false, message: 'An error occurred while soft deleting the user' }
   }
 }

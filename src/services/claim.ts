@@ -98,6 +98,11 @@ export default async function claimService(
       return parseResponseResult('error', config.claim.disabledMessage, 422)
     }
 
+    const user = await getDatabaseUserById(userId)
+    if (!user || user.softDeleted) {
+      return parseResponseResult('error', 'Usuário não encontrado ou banido', 422)
+    }
+
     if (!code) {
       return parseResponseResult('error', 'Nenhum código foi fornecido', 422)
     }

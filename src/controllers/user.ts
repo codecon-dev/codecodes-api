@@ -1,10 +1,11 @@
-import { Controller, Get, Response, Route, Security } from 'tsoa'
+import { Body, Controller, Get, Post, Response, Route, Security } from 'tsoa'
 import { getRankService } from '../services/rank'
-import { checkForSuspiciousActivity, getDatabaseUserById, getDatabaseUsers } from '../services/user'
+import { checkForSuspiciousActivity, getDatabaseUserById, getDatabaseUsers, softDeleteUserById } from '../services/user'
 import {
   ErrorResponseModel,
   RankRequestResult,
   RequestResult,
+  SoftDeleteResult,
   User
 } from '../types'
 
@@ -56,6 +57,23 @@ export class UserController extends Controller {
       console.log(error)
       this.setStatus(500)
       return []
+    }
+  }
+
+  @Response<ErrorResponseModel>('404', 'Not Found', {
+    statusCode: 404,
+    message: 'Usuário não encontrado'
+  })
+  @Security('api_key')
+  @Post('/susp/softdelete')
+  public async softDeleteUser(@Body() body: { userId: string }): Promise<SoftDeleteResult> {
+    try {
+      const { userId } = body
+      const result = await softDeleteUserById(userId)
+      return result
+    } catch (error) {
+      console.log(error)
+      return { success: false, message: 'An error occurred while soft deleting the user' }
     }
   }
 }

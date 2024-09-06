@@ -40,6 +40,7 @@ export type User = {
   tag: string
   score: number
   tokens: UserClaimedToken[]
+  softDeleted?: boolean
 }
 
 export type CompactUser = {
@@ -47,6 +48,7 @@ export type CompactUser = {
   score: number
   tag: string
   claims: number
+  softDeleted?: boolean
 }
 
 export type ClaimRequestResult = {
@@ -106,4 +108,11 @@ export interface ITokenPayload {
 export interface ErrorResponseModel {
   statusCode: number
   message: string
+}
+
+// Add a new interface for soft delete operations
+export interface SoftDeleteResult {
+  success: boolean
+  message: string
+  user?: User
 }
