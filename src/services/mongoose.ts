@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import TokenModel from '../models/token'
-import { Token, User } from '../types'
 import UserModel from '../models/user'
+import { Token, User } from '../types'
 
 export async function connectMongoose(): Promise<typeof mongoose> {
   try {
@@ -60,8 +60,9 @@ export async function getTokensFromMongo(
 export async function getLatestClaimedTokens(): Promise<Token[]> {
   const tokens = await TokenModel.aggregate([
     { $unwind: '$claimedBy' },
-    { $sort: { 'claimedBy.claimedAt': -1 } }
-  ])
+    { $sort: { 'claimedBy.claimedAt': -1 } },
+    { $limit: 100 } // Limit the number of results
+  ]).allowDiskUse(true)
 
   return tokens
 }
@@ -85,7 +86,7 @@ export async function getClaimsPerHour(): Promise<
     },
     { $sort: { _id: 1 } },
     { $project: { _id: 0, date: '$_id', count: 1 } }
-  ])
+  ]).allowDiskUse(true)
 
   return tokens.map((token) => ({ date: token.date, count: token.count }))
 }
