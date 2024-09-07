@@ -18,6 +18,7 @@
     "csv-parser": "^3.0.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-rate-limit": "^7.4.0",
     "luxon": "^3.3.0",
     "mongoose": "^5.13.7",
     "morgan": "^1.10.0",

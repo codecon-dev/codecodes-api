@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express'
+import rateLimit from 'express-rate-limit'
 import multer from 'multer'
 import { MulterRequest, TokenController } from '../controllers/token'
 import middlewares from '../middlewares'
@@ -6,9 +7,18 @@ import middlewares from '../middlewares'
 const router = Router()
 const upload = multer({ dest: 'uploads/' })
 
+const claimLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20, // Limit each IP to 5 requests per windowMs
+  message: 'Too many attempts, please try again later.',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
 router.post(
   '/claim',
   middlewares.authentication,
+  claimLimiter,
   async (request, response, next) => {
     try {
       const controller = new TokenController()
@@ -123,6 +133,7 @@ router.post(
 router.post(
   '/partner',
   [middlewares.setHasPartnerAuth, middlewares.authentication],
+  claimLimiter,
   async (_request: Request, response: Response, next: NextFunction) => {
     try {
       const controller = new TokenController()
