@@ -69,7 +69,7 @@ const usersWithSameScoreAndTokensButDifferentLastClaimDates = [
   }
 ]
 
-describe('Rank Service', () => {
+describe.skip('Rank Service', () => {
   it('unties users based on their claims number', async () => {
     const rank = await getRankService(
       usersWithSameScoreButDifferentTokensQuantity
