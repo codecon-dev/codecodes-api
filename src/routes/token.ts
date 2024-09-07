@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express'
 import rateLimit from 'express-rate-limit'
 import multer from 'multer'
+import { parseResponseResult } from '../common/parseResponseResult'
 import { MulterRequest, TokenController } from '../controllers/token'
 import middlewares from '../middlewares'
 
@@ -9,8 +10,11 @@ const upload = multer({ dest: 'uploads/' })
 
 const claimLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 20, // Limit each IP to 5 requests per windowMs
-  message: 'Too many attempts, please try again later.',
+  max: 20, // Limit each IP to 20 requests per windowMs
+  handler: (req, res) => {
+    const result = parseResponseResult('error', 'Too many attempts', 429)
+    res.status(result.statusCode).json(result)
+  },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
