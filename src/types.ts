@@ -47,7 +47,7 @@ export type CompactUser = {
   userId: string
   score: number
   tag: string
-  claims: number
+  claims?: number
   softDeleted?: boolean
 }
 
