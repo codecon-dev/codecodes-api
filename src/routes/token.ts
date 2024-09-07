@@ -183,21 +183,21 @@ router.post(
   }
 )
 
-router.post(
-  '/partner',
-  [middlewares.setHasPartnerAuth, middlewares.authentication],
-  async (_request: Request, response: Response, next: NextFunction) => {
-    try {
-      const controller = new TokenController()
-      const requestResult = await controller.createByPartner()
-      return response
-        .status(requestResult.statusCode || 200)
-        .send(requestResult)
-    } catch (error) {
-      next(error)
-    }
-  }
-)
+// router.post(
+//   '/partner',
+//   [middlewares.setHasPartnerAuth, middlewares.authentication],
+//   async (_request: Request, response: Response, next: NextFunction) => {
+//     try {
+//       const controller = new TokenController()
+//       const requestResult = await controller.createByPartner()
+//       return response
+//         .status(requestResult.statusCode || 200)
+//         .send(requestResult)
+//     } catch (error) {
+//       next(error)
+//     }
+//   }
+// )
 
 router.post(
   '/revert-user-claims',
