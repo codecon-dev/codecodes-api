@@ -37,14 +37,14 @@ function mapCompactUsers(users: User[]) {
     userId,
     score,
     tag,
-    claims: tokens.length
+    // claims: tokens.length
   }))
 }
 
 export async function getRankService(
   users: User[]
 ): Promise<RankRequestResult> {
-  const isRankEnabled = false
+  const isRankEnabled = true
   if (!isRankEnabled) {
     return {
       status: 'sucess',
