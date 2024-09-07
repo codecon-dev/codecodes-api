@@ -99,7 +99,7 @@ export default async function claimService(
     }
 
     const user = await getDatabaseUserById(userId)
-    if (user.softDeleted) {
+    if (user?.softDeleted) {
       return parseResponseResult('error', 'Usuário não encontrado', 422)
     }
 
