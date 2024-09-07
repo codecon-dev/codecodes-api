@@ -53,7 +53,9 @@ const emailStore = new EmailStore()
 const claimLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 20, // Limit each email to 20 requests per windowMs
-  handler: (req, res) => {
+  handler: (req: any, res: any) => {
+    const email = req.body.email || 'Unknown'
+    console.log(`[RATE-LIMIT] User ${email} hit the rate limit`)
     const result = parseResponseResult('error', 'Too many attempts, please try again later.', 429)
     res.status(result.statusCode).json(result)
   },
