@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express'
+import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 import multer from 'multer'
 import { parseResponseResult } from '../common/parseResponseResult'
@@ -52,7 +52,7 @@ const emailStore = new EmailStore()
 
 const claimLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 20, // Limit each email to 20 requests per windowMs
+  max: 10, // Limit each email to 20 requests per windowMs
   handler: (req: any, res: any) => {
     const email = req.body.email || 'Unknown'
     console.log(`[RATE-LIMIT] User ${email} hit the rate limit`)
