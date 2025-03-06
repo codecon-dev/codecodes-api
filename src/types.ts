@@ -70,7 +70,13 @@ export type RankRequestResult = {
   status: string
   message: string
   statusCode: 200
-  data: CompactUser[]
+  data: RankWithUser
+}
+
+type RankWithUser = {
+  ranking: CompactUser[]
+  currentUserPosition: number
+  currentUserScore: number
 }
 
 export type StatsRequestResult = {

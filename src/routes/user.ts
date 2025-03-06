@@ -5,12 +5,13 @@ import middlewares from '../middlewares'
 const router = Router()
 
 router.get(
-  '/rank',
+  '/rank/:userId',
   middlewares.authentication,
   async (request, response, next) => {
     try {
       const controller = new UserController()
-      const rankResult = await controller.getRank()
+      const { userId } = request?.params
+      const rankResult = await controller.getRank(userId)
       return response.send(rankResult)
     } catch (error) {
       next(error)

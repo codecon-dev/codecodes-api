@@ -16,11 +16,13 @@ export class UserController extends Controller {
     message: 'Wrong or missing apikey'
   })
   @Security('api_key')
-  @Get('/rank')
-  public async getRank(): Promise<RankRequestResult | RequestResult> {
+  @Get('/rank/{userId}')
+  public async getRank(
+    userId: string
+  ): Promise<RankRequestResult | RequestResult> {
     try {
       const users = await getDatabaseUsers()
-      const rankResult = await getRankService(users)
+      const rankResult = await getRankService(users, userId)
       return rankResult
     } catch (error) {
       console.log(error)

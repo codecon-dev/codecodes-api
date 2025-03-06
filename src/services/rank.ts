@@ -42,14 +42,25 @@ function mapCompactUsers(users: User[]) {
 }
 
 export async function getRankService(
-  users: User[]
+  users: User[],
+  externalUserId: string
 ): Promise<RankRequestResult> {
   const usersSorted = sortUsers(users)
   const compactUsers = mapCompactUsers(usersSorted)
+  const currentUserPosition = compactUsers.findIndex(
+    ({ userId }) => userId === externalUserId
+  )
+
+  const currentUser = users.find(({ userId }) => userId === externalUserId)
+
   return {
     status: 'sucess',
     statusCode: 200,
     message: `Rank for all ${users.length} users`,
-    data: compactUsers
+    data: {
+      ranking: compactUsers.splice(0, 10),
+      currentUserPosition,
+      currentUserScore: currentUser?.score
+    }
   }
 }
