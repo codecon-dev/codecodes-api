@@ -36,7 +36,7 @@ function mapCompactUsers(users: User[]) {
   return users.map(({ userId, score, tag, tokens }) => ({
     userId,
     score,
-    tag,
+    tag
     // claims: tokens.length
   }))
 }
@@ -51,7 +51,11 @@ export async function getRankService(
       status: 'sucess',
       statusCode: 200,
       message: 'Rank is disabled',
-      data: []
+      data: {
+        ranking: [],
+        currentUserPosition: -1,
+        currentUserScore: 0
+      }
     }
   }
 
