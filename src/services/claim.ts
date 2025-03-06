@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { parseResponseResult } from '../common/parseResponseResult'
 import config from '../config'
 import { ClaimRequestResult, RequestResult, Token, UserClaim } from '../types'
@@ -6,10 +5,8 @@ import { getDatabaseTokenByCode, updateDatabaseToken } from './token'
 import { getDatabaseUserById, updateDatabaseUser } from './user'
 
 function isExpired(expireAt: string) {
-  const now = DateTime.now().setZone('America/Sao_Paulo')
-  const expirationDate = DateTime.fromISO(expireAt, {
-    zone: 'America/Sao_Paulo'
-  })
+  const now = new Date()
+  const expirationDate = new Date(expireAt)
   return expireAt && now > expirationDate
 }
 
@@ -92,7 +89,9 @@ export default async function claimService(
   tag: string
 ): Promise<RequestResult | ClaimRequestResult> {
   try {
-    console.log(`[CLAIM-SERVICE] User ${userId} (${tag}) is trying to claim ${code}`)
+    console.log(
+      `[CLAIM-SERVICE] User ${userId} (${tag}) is trying to claim ${code}`
+    )
 
     if (!config.claim.enabled) {
       return parseResponseResult('error', config.claim.disabledMessage, 422)
@@ -175,7 +174,9 @@ export default async function claimService(
       )
     }
 
-    console.log(`[CLAIM-SERVICE] Claim completed for ${userId} (${tag}) and token ${code}`)
+    console.log(
+      `[CLAIM-SERVICE] Claim completed for ${userId} (${tag}) and token ${code}`
+    )
 
     return {
       status: 'success',

@@ -36,8 +36,8 @@ function mapCompactUsers(users: User[]) {
   return users.map(({ userId, score, tag, tokens }) => ({
     userId,
     score,
-    tag
-    // claims: tokens.length
+    tag,
+    claims: tokens.length
   }))
 }
 
