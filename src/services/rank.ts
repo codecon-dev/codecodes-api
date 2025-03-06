@@ -1,4 +1,4 @@
-import { UserClaimedToken, RankRequestResult, User } from '../types'
+import { RankRequestResult, User, UserClaimedToken } from '../types'
 
 function getLastClaimedToken(user: User) {
   return user.tokens[user.tokens.length - 1]
@@ -37,7 +37,7 @@ function mapCompactUsers(users: User[]) {
     userId,
     score,
     tag,
-    claims: tokens.length
+    // claims: tokens.length
   }))
 }
 
@@ -45,6 +45,16 @@ export async function getRankService(
   users: User[],
   externalUserId: string
 ): Promise<RankRequestResult> {
+  const isRankEnabled = true
+  if (!isRankEnabled) {
+    return {
+      status: 'sucess',
+      statusCode: 200,
+      message: 'Rank is disabled',
+      data: []
+    }
+  }
+
   const usersSorted = sortUsers(users)
   const compactUsers = mapCompactUsers(usersSorted)
   const currentUserPosition = compactUsers.findIndex(

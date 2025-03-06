@@ -20,6 +20,10 @@ const UserSchema = new Schema<User>({
   tokens: {
     type: Array,
     required: true
+  },
+  softDeleted: {
+    type: Boolean,
+    default: false
   }
 })
 

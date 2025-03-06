@@ -1,9 +1,9 @@
-import { getDatabaseTokenByCode, updateDatabaseToken } from './token'
-import { getDatabaseUserById, updateDatabaseUser } from './user'
+import { DateTime } from 'luxon'
 import { parseResponseResult } from '../common/parseResponseResult'
 import config from '../config'
-import { UserClaim, RequestResult, Token, ClaimRequestResult } from '../types'
-import { DateTime } from 'luxon'
+import { ClaimRequestResult, RequestResult, Token, UserClaim } from '../types'
+import { getDatabaseTokenByCode, updateDatabaseToken } from './token'
+import { getDatabaseUserById, updateDatabaseUser } from './user'
 
 function isExpired(expireAt: string) {
   const now = DateTime.now().setZone('America/Sao_Paulo')
@@ -92,12 +92,15 @@ export default async function claimService(
   tag: string
 ): Promise<RequestResult | ClaimRequestResult> {
   try {
-    console.log(
-      `[CLAIM-SERVICE] User ${userId} (${tag}) is trying to claim ${code}`
-    )
+    console.log(`[CLAIM-SERVICE] User ${userId} (${tag}) is trying to claim ${code}`)
 
     if (!config.claim.enabled) {
       return parseResponseResult('error', config.claim.disabledMessage, 422)
+    }
+
+    const user = await getDatabaseUserById(userId)
+    if (user?.softDeleted) {
+      return parseResponseResult('error', 'Usuário não encontrado', 422)
     }
 
     if (!code) {
@@ -136,7 +139,6 @@ export default async function claimService(
 
     const date = new Date(Date.now())
     const nowDateString = date.toISOString()
-
     const scoreAcquired = computeScore(
       claimedBy,
       value,
@@ -173,6 +175,8 @@ export default async function claimService(
       )
     }
 
+    console.log(`[CLAIM-SERVICE] Claim completed for ${userId} (${tag}) and token ${code}`)
+
     return {
       status: 'success',
       message: `Boa! Você ganhou ${scoreAcquired} pontos e agora está com ${userClaimSuccess.score} pontos!`,
@@ -183,7 +187,7 @@ export default async function claimService(
       }
     }
   } catch (error) {
-    console.log(error)
+    console.log('[CLAIM-SERVICE] Error occurred:', error)
     throw new Error(error)
   }
 }

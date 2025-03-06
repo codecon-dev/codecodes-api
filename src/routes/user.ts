@@ -34,4 +34,32 @@ router.get(
   }
 )
 
+router.get(
+  '/susp/check',
+  middlewares.authentication,
+  async (request, response, next) => {
+    try {
+      const controller = new UserController()
+      const suspiciousUsers = await controller.getSuspiciousActivity()
+      return response.send(suspiciousUsers)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
+router.post(
+  '/susp/softdelete',
+  middlewares.authentication,
+  async (request, response, next) => {
+    try {
+      const controller = new UserController()
+      const result = await controller.softDeleteUser(request.body)
+      return response.send(result)
+    } catch (error) {
+      next(error)
+    }
+  }
+)
+
 export default router

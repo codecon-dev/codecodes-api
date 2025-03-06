@@ -3,3 +3,4 @@ node_modules
 dist
 swagger.json
 uploads
+.DS_Store

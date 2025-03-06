@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import TokenModel from '../models/token'
-import { Token, User } from '../types'
 import UserModel from '../models/user'
+import { Token, User } from '../types'
 
 export async function connectMongoose(): Promise<typeof mongoose> {
   try {
@@ -14,7 +14,7 @@ export async function connectMongoose(): Promise<typeof mongoose> {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(`Error to connect to mongo: ${error}`)
   }
 }
 
@@ -30,7 +30,7 @@ export async function getTokenFromMongo(
 
     return token
   } catch (error) {
-    console.log(error)
+    console.log(`Error to get token from mongo: ${error}`)
   }
 }
 
@@ -53,15 +53,16 @@ export async function getTokensFromMongo(
 
     return tokens
   } catch (error) {
-    console.log(error)
+    console.log(`Error to get tokens from mongo: ${error}`)
   }
 }
 
 export async function getLatestClaimedTokens(): Promise<Token[]> {
   const tokens = await TokenModel.aggregate([
     { $unwind: '$claimedBy' },
-    { $sort: { 'claimedBy.claimedAt': -1 } }
-  ])
+    { $sort: { 'claimedBy.claimedAt': -1 } },
+    { $limit: 100 } // Limit the number of results
+  ]).allowDiskUse(true)
 
   return tokens
 }
@@ -85,7 +86,7 @@ export async function getClaimsPerHour(): Promise<
     },
     { $sort: { _id: 1 } },
     { $project: { _id: 0, date: '$_id', count: 1 } }
-  ])
+  ]).allowDiskUse(true)
 
   return tokens.map((token) => ({ date: token.date, count: token.count }))
 }
@@ -96,7 +97,7 @@ export async function createToken(tokenContent: Token): Promise<Token> {
     const token = await TokenModel.create(tokenContent)
     return token
   } catch (error) {
-    console.log(error)
+    console.log(`Failed to create token on mongo: ${error}`)
     throw error
   }
 }
@@ -117,7 +118,7 @@ export async function updateToken(
     await token.save()
     return token
   } catch (error) {
-    console.log(error)
+    console.log(`Error to update token on mongo: ${error}`)
   }
 }
 
@@ -127,7 +128,8 @@ export async function getUserFromMongo(
   try {
     await connectMongoose()
     const [user] = await UserModel.find({
-      $or: [{ userId: userIdOrTag }, { tag: userIdOrTag }]
+      $or: [{ userId: userIdOrTag }, { tag: userIdOrTag }],
+      softDeleted: { $ne: true }
     }).lean()
     if (!user) {
       return null
@@ -135,20 +137,20 @@ export async function getUserFromMongo(
 
     return user
   } catch (error) {
-    console.log(error)
+    console.log(`Failed to get user from mongo: ${error}`)
   }
 }
 
-export async function getUsersFromMongo(): Promise<User[]> {
+export async function getUsersFromMongo(query = {}): Promise<User[]> {
   try {
     await connectMongoose()
-    const users = await UserModel.find({})
+    const users = await UserModel.find({ ...query, softDeleted: { $ne: true } })
     if (!users) {
       return []
     }
     return users
   } catch (error) {
-    console.log(error)
+    console.log(`Failed to get users from mongo: ${error}`)
   }
 }
 
@@ -160,7 +162,7 @@ export async function createOrUpdateUser(
     await connectMongoose()
     const user = await UserModel.findOneAndUpdate(
       { userId: userId },
-      userContent,
+      { ...userContent, softDeleted: userContent.softDeleted ?? false },
       {
         new: true,
         upsert: true
@@ -169,6 +171,21 @@ export async function createOrUpdateUser(
     await user.save()
     return user
   } catch (error) {
-    console.log(error)
+    console.log(`Failed to create or update user on mongo: ${error}`)
+  }
+}
+
+export async function softDeleteUser(userId: string): Promise<User | null> {
+  try {
+    await connectMongoose()
+    const user = await UserModel.findOneAndUpdate(
+      { userId: userId },
+      { softDeleted: true },
+      { new: true }
+    )
+    return user
+  } catch (error) {
+    console.log(`Failed to soft delete user on mongo: ${error}`)
+    return null
   }
 }

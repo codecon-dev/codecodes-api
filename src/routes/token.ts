@@ -1,14 +1,77 @@
-import { NextFunction, Request, Response, Router } from 'express'
+import { Router } from 'express'
+import rateLimit from 'express-rate-limit'
 import multer from 'multer'
+import { parseResponseResult } from '../common/parseResponseResult'
 import { MulterRequest, TokenController } from '../controllers/token'
 import middlewares from '../middlewares'
+import { ITokenClaimPayload } from '../types'
 
 const router = Router()
 const upload = multer({ dest: 'uploads/' })
 
+// Custom store for rate limiting based on email
+class EmailStore {
+  private store: any
+
+  constructor() {
+    this.store = new Map()
+  }
+
+  incr(key: string, cb: any): void {
+    const now = Date.now()
+    const record = this.store.get(key) || { count: 0, resetTime: now + 60000 }
+
+    if (now > record.resetTime) {
+      record.count = 1
+      record.resetTime = now + 60000
+    } else {
+      record.count++
+    }
+
+    this.store.set(key, record)
+    cb(null, record.count)
+  }
+
+  decrement(key: string): void {
+    const record = this.store.get(key)
+    if (record) {
+      record.count = Math.max(0, record.count - 1)
+    }
+  }
+
+  resetKey(key: string): void {
+    this.store.delete(key)
+  }
+
+  resetAll(): void {
+    this.store.clear()
+  }
+}
+
+const emailStore = new EmailStore()
+
+const claimLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // Limit each email to 20 requests per windowMs
+  handler: (req: any, res: any) => {
+    const email = req.body.email || 'Unknown'
+    console.log(`[RATE-LIMIT] User ${email} hit the rate limit`)
+    const result = parseResponseResult('error', 'Too many attempts, please try again later.', 429)
+    res.status(result.statusCode).json(result)
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req: any) => {
+    const body = req.body as ITokenClaimPayload
+    return body.email || req.ip // Fallback to IP if email is not provided
+  },
+  store: emailStore as any
+})
+
 router.post(
   '/claim',
   middlewares.authentication,
+  claimLimiter,
   async (request, response, next) => {
     try {
       const controller = new TokenController()
@@ -120,16 +183,30 @@ router.post(
   }
 )
 
+// router.post(
+//   '/partner',
+//   [middlewares.setHasPartnerAuth, middlewares.authentication],
+//   async (_request: Request, response: Response, next: NextFunction) => {
+//     try {
+//       const controller = new TokenController()
+//       const requestResult = await controller.createByPartner()
+//       return response
+//         .status(requestResult.statusCode || 200)
+//         .send(requestResult)
+//     } catch (error) {
+//       next(error)
+//     }
+//   }
+// )
+
 router.post(
-  '/partner',
-  [middlewares.setHasPartnerAuth, middlewares.authentication],
-  async (_request: Request, response: Response, next: NextFunction) => {
+  '/revert-user-claims',
+  middlewares.authentication,
+  async (request, response, next) => {
     try {
       const controller = new TokenController()
-      const requestResult = await controller.createByPartner()
-      return response
-        .status(requestResult.statusCode || 200)
-        .send(requestResult)
+      const result = await controller.revertUserClaims(request.body)
+      return response.status(result.statusCode || 200).send(result)
     } catch (error) {
       next(error)
     }
