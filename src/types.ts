@@ -122,3 +122,10 @@ export interface SoftDeleteResult {
   message: string
   user?: User
 }
+
+export interface UserResponse {
+  success: boolean
+  message: string
+  statusCode?: number
+  user?: User
+}

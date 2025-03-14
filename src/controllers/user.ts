@@ -1,12 +1,18 @@
 import { Body, Controller, Get, Post, Response, Route, Security } from 'tsoa'
 import { getRankService } from '../services/rank'
-import { checkForSuspiciousActivity, getDatabaseUserById, getDatabaseUsers, softDeleteUserById } from '../services/user'
+import {
+  checkForSuspiciousActivity,
+  getDatabaseUserById,
+  getDatabaseUsers,
+  softDeleteUserById
+} from '../services/user'
 import {
   ErrorResponseModel,
   RankRequestResult,
   RequestResult,
   SoftDeleteResult,
-  User
+  User,
+  UserResponse
 } from '../types'
 
 @Route('/user')
@@ -36,12 +42,34 @@ export class UserController extends Controller {
   })
   @Security('api_key')
   @Get('{userId}')
-  public async getUser(userId: string): Promise<User> {
+  public async getUser(userId: string): Promise<UserResponse> {
     try {
       const user = await getDatabaseUserById(userId)
-      return user
+
+      if (!user) {
+        this.setStatus(404)
+        return {
+          success: false,
+          message: 'User not found',
+          statusCode: 404
+        }
+      }
+
+      return {
+        success: true,
+        message: 'User found',
+        statusCode: 200,
+        user
+      }
     } catch (error) {
+      this.setStatus(500)
       console.log(error)
+
+      return {
+        success: false,
+        statusCode: 500,
+        message: 'An error occurred while searching the user'
+      }
     }
   }
 
@@ -68,14 +96,19 @@ export class UserController extends Controller {
   })
   @Security('api_key')
   @Post('/susp/softdelete')
-  public async softDeleteUser(@Body() body: { userId: string }): Promise<SoftDeleteResult> {
+  public async softDeleteUser(
+    @Body() body: { userId: string }
+  ): Promise<SoftDeleteResult> {
     try {
       const { userId } = body
       const result = await softDeleteUserById(userId)
       return result
     } catch (error) {
       console.log(error)
-      return { success: false, message: 'An error occurred while soft deleting the user' }
+      return {
+        success: false,
+        message: 'An error occurred while soft deleting the user'
+      }
     }
   }
 }

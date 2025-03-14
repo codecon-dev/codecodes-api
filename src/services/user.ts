@@ -48,45 +48,54 @@ export async function getDatabaseUsers(): Promise<User[]> {
 export async function checkForSuspiciousActivity(): Promise<any[]> {
   try {
     const users = await getUsersFromMongo({ softDeleted: { $ne: true } })
-    const suspiciousUsers = users.filter(user => {
-      if (user.tokens.length < 10) return false
+    const suspiciousUsers = users
+      .filter((user) => {
+        if (user.tokens.length < 10) return false
 
-      const sortedTokens = user.tokens.sort((a, b) =>
-        DateTime.fromISO(b.claimedAt).toMillis() - DateTime.fromISO(a.claimedAt).toMillis()
-      )
+        const sortedTokens = user.tokens.sort(
+          (a, b) =>
+            DateTime.fromISO(b.claimedAt).toMillis() -
+            DateTime.fromISO(a.claimedAt).toMillis()
+        )
 
-      let consecutiveQuickClaims = 0
-      let suspiciousTokens = []
-      for (let i = 1; i < sortedTokens.length; i++) {
-        const timeDiff = DateTime.fromISO(sortedTokens[i - 1].claimedAt).diff(
-          DateTime.fromISO(sortedTokens[i].claimedAt), 'seconds'
-        ).seconds
+        let consecutiveQuickClaims = 0
+        let suspiciousTokens = []
+        for (let i = 1; i < sortedTokens.length; i++) {
+          const timeDiff = DateTime.fromISO(sortedTokens[i - 1].claimedAt).diff(
+            DateTime.fromISO(sortedTokens[i].claimedAt),
+            'seconds'
+          ).seconds
 
-        if (timeDiff < 5) {
-          consecutiveQuickClaims++
-          suspiciousTokens.push(sortedTokens[i])
-          if (consecutiveQuickClaims >= 9) {
-            suspiciousTokens.push(sortedTokens[i - 1]) // Add the 10th token
-            return true
+          if (timeDiff < 5) {
+            consecutiveQuickClaims++
+            suspiciousTokens.push(sortedTokens[i])
+            if (consecutiveQuickClaims >= 9) {
+              suspiciousTokens.push(sortedTokens[i - 1]) // Add the 10th token
+              return true
+            }
+          } else {
+            consecutiveQuickClaims = 0
+            suspiciousTokens = []
           }
-        } else {
-          consecutiveQuickClaims = 0
-          suspiciousTokens = []
         }
-      }
 
-      return false
-    }).map(user => ({
-      userId: user.userId,
-      score: user.score,
-      suspiciousTokens: user.tokens
-        .sort((a, b) => DateTime.fromISO(b.claimedAt).toMillis() - DateTime.fromISO(a.claimedAt).toMillis())
-        .slice(0, 10)
-        .map(token => ({
-          code: token.code,
-          claimedAt: token.claimedAt
-        }))
-    }))
+        return false
+      })
+      .map((user) => ({
+        userId: user.userId,
+        score: user.score,
+        suspiciousTokens: user.tokens
+          .sort(
+            (a, b) =>
+              DateTime.fromISO(b.claimedAt).toMillis() -
+              DateTime.fromISO(a.claimedAt).toMillis()
+          )
+          .slice(0, 10)
+          .map((token) => ({
+            code: token.code,
+            claimedAt: token.claimedAt
+          }))
+      }))
 
     return suspiciousUsers
   } catch (error) {
@@ -95,15 +104,24 @@ export async function checkForSuspiciousActivity(): Promise<any[]> {
   }
 }
 
-export async function softDeleteUserById(userId: string): Promise<SoftDeleteResult> {
+export async function softDeleteUserById(
+  userId: string
+): Promise<SoftDeleteResult> {
   try {
     const user = await softDeleteUser(userId)
     if (!user) {
       return { success: false, message: `User ${userId} not found` }
     }
-    return { success: true, message: `User ${userId} has been soft deleted`, user }
+    return {
+      success: true,
+      message: `User ${userId} has been soft deleted`,
+      user
+    }
   } catch (error) {
     console.log(`Error soft deleting user ${userId}:`, error)
-    return { success: false, message: 'An error occurred while soft deleting the user' }
+    return {
+      success: false,
+      message: 'An error occurred while soft deleting the user'
+    }
   }
 }

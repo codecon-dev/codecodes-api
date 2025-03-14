@@ -27,7 +27,7 @@ router.get(
       const { userId } = request?.params
       const controller = new UserController()
       const user = await controller.getUser(userId)
-      return response.send(user)
+      return response.status(user.statusCode || 200).send(user)
     } catch (error) {
       next(error)
     }
